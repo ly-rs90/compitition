@@ -1,0 +1,26 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "globals":{
+        "webix":true,
+        "scheduler":true,
+        "__dirname":true,
+        "APPNAME":true, "VERSION":true, "PRODUCTION":true, "BUILD_AS_MODULE":true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "rules": {
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}

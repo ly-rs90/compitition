@@ -1,0 +1,114 @@
+::-webkit-scrollbar {display: none;}
+.login, .mode-bg, .train-bg {
+    background: url("../img/loginbg.jpg");
+}
+.login-bar {
+    background: rgba(11, 48, 184, 0.5);
+}
+.login-form {
+    border: none;
+    border-radius: 5px;
+}
+.login-big-title, .login-small-title {
+    color: #fff;
+}
+.login-big-title > div {
+    font-size: 50px;
+}
+.login-small-title > div {
+    font-size: 30px;
+}
+.login-form-title > div {
+    color: #555;
+    font-size: 20px;
+    font-weight: 500;
+}
+.login-form-register > div {
+    font-size: 14px;
+    color: #067ccc;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.mode-btn button {
+    border-radius: 15px;
+}
+.mode-btn button > span {
+    font-size: 130px !important;
+    margin-left: -60px !important;
+    margin-top: 30px;
+}
+.mode-btn button div {
+    font-size: 25px;
+    bottom: 60px !important;
+}
+.toolbar {
+    background: #067ccc;
+}
+.toolbar-title {
+    padding-left: 3px !important;
+}
+.toolbar-title > div {
+    color: #fff;
+    font-size: 25px;
+    font-weight: 500;
+    font-family: 华文行楷;
+}
+.toolbar-logo button {
+    margin-top: -2px;
+}
+.toolbar-logo button:hover::before {
+    background-color: transparent !important;
+}
+.toolbar-logo button > span {
+    color: #fff !important;
+    font-size: 25px !important;
+    width: 25px !important;
+    height: 25px !important;
+}
+.toolbar-welcome > div {
+    color: #fff;
+}
+.train-btn button {
+    border-radius: 10px;
+}
+.train-btn button > span {
+    font-size: 70px !important;
+    margin-left: -28px !important;
+    margin-top: 30px;
+}
+.train-btn button div {
+    font-size: 20px;
+    bottom: 60px !important;
+}
+.train-table {
+    background: #fff;
+    border-radius: 10px;
+}
+.judge-bg {
+    background: #eee;
+}
+.judge-content > div, .choice-content > div, .short-content > div, .multichoice-content > div  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
+.custom-check {
+    color: #35bb4c;
+}
+.badge-num {
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background: #4c9e52;
+    border-radius: 50%;
+    position: relative;
+    top: -5px;
+    left: 8px;
+    line-height: 25px;
+    font-size: 14px;
+    color: #fff;
+}
+.white-bg {
+    background: #fff;
+}
