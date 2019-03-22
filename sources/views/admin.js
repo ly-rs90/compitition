@@ -12,7 +12,7 @@ export default class Admin extends JetView {
     return {
       cols: [
         {
-          width: 200, view: 'sidebar',
+          width: 200, view: 'sidebar', id: 'admin:menu',
           data: [
             {id: 'paperpublish', value: '发布试卷', icon: 'fas fa-file-alt'},
             {id: 'papermanager', value: '试卷管理', icon: 'fas fa-cog'},

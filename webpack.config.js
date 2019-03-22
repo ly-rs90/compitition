@@ -20,17 +20,11 @@ module.exports = function(env) {
     entry: {
       app: './sources/app.js'
     },
-    // output: {
-    //   path: path.join(__dirname, 'dist'),
-    //   publicPath:'/dist/',
-    //   filename: '[name].[contenthash].js',
-    //   chunkFilename: '[name].[contenthash].js'
-    // },
     output: {
       path: path.join(__dirname, 'dist'),
       publicPath:'/dist/',
-      filename: '[name].js',
-      chunkFilename: '[name].js'
+      filename: production ? '[name].[contenthash].js' : '[name].js',
+      chunkFilename: production ? '[name].[contenthash].js' : '[name].js'
     },
     module: {
       rules: [
@@ -71,7 +65,7 @@ module.exports = function(env) {
       ),
       new webpack.HashedModuleIdsPlugin(),
       new MiniCssExtractPlugin({
-        filename:'[name].css'
+        filename: production ? '[name].[contenthash].css' : '[name].css'
       }),
       new webpack.DefinePlugin({
         VERSION: `"${pack.version}"`,

@@ -141,4 +141,7 @@ export default class PaperManager extends JetView {
   init(_$view, _$) {
     $$('form:info').bind($$('paper:table'));
   }
+  ready(_$view, _$url) {
+    $$('admin:menu').select('papermanager');
+  }
 }

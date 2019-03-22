@@ -14,6 +14,8 @@ from handler.shortans import ShortAns
 from handler.paperpublish import PaperPublish
 from handler.papermanager import PaperManager
 from handler.paper import Paper
+from handler.register import Register
+from handler.login import Login
 
 from tornado.options import define, options
 define("port", default=80, help="run on the given port", type=int)
@@ -32,6 +34,8 @@ class Application(tornado.web.Application):
     def __init__(self):
         self.db = sqlite3.connect('data.db')
         handlers = [
+            (r'/register', Register),
+            (r'/login', Login),
             (r'/judge', Judge),
             (r'/paper', Paper),
             (r'/paperpublish', PaperPublish),

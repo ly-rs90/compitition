@@ -1,7 +1,9 @@
 -- 用户
 create table if not exists user (
+  id text primary key not null,
   name text not null,
-  password text not null
+  password text not null,
+  role integer default 1 check ( role in (0, 1) ) -- 0: 管理员, 1: 普通用户
 );
 -- 试卷信息
 create table if not exists paper_info (
@@ -20,13 +22,15 @@ create table if not exists paper_info (
 );
 -- 判断题
 create table if not exists judge (
-  id text primary key not null,
+  num integer primary key autoincrement,
+  id text not null,
   content text not null unique,
   ans integer check ( ans in (0, 1) )
 );
 -- 选择题
 create table if not exists choice (
-  id text primary key not null,
+  num integer primary key autoincrement,
+  id text not null,
   content text not null unique,
   c1 text,
   c2 text,
@@ -36,7 +40,8 @@ create table if not exists choice (
 );
 -- 多项选择题
 create table if not exists multi_choice (
-  id text primary key not null,
+  num integer primary key autoincrement,
+  id text not null,
   content text not null unique,
   c1 text,
   c2 text,
@@ -46,7 +51,8 @@ create table if not exists multi_choice (
 );
 -- 简答题
 create table if not exists short_answer (
-  id text primary key not null,
+  num integer primary key autoincrement,
+  id text not null,
   content text not null unique,
   ans text
 );

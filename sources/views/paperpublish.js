@@ -388,6 +388,10 @@ export default class PaperPublish extends JetView {
       updateShortAns();
     };
   }
+  ready(_$view, _$url) {
+    $$('admin:menu').select('paperpublish');
+  }
+
   destroy() {
     window.onresize = null;
   }

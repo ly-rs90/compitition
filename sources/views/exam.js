@@ -70,17 +70,19 @@ export default class Exam extends JetView {
                       webix.alert(res.info);
                     }
                     else {
+                      let index = 1;
                       let c = p.getChildViews()[0];
                       p.removeView(c);
+                      p.addView({height: 5});
                       res.data.judge.forEach(function (item) {
                         p.addView({
                           rows: [
                             {
-                              css: 'white-bg',
+                              css: 'white-bg question-panel',
                               rows: [
-                                {height: 20},
-                                {view: 'template', template: item.content, borderless: 1, autoheight: 1},
-                                {height: 20},
+                                {template: '', css: 'question-tip'},
+                                {template: '判断', css: 'question-type'},
+                                {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
                                 {
                                   cols: [
                                     {},
@@ -92,7 +94,27 @@ export default class Exam extends JetView {
                                     },
                                     {}
                                   ]
-                                }
+                                },
+                                {height: 10}
+                              ]
+                            }
+                          ]
+                        });
+                      });
+                      res.data.multi.forEach(function (item) {
+                        p.addView({
+                          css: 'white-bg question-panel',
+                          rows: [
+                            {template: '', css: 'question-tip'},
+                            {template: '多选', css: 'question-type'},
+                            {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
+                            {
+                              view: 'form', id: item.id, borderless: 1,
+                              elements: [
+                                {view: 'checkbox', label: '', name: 'a', labelWidth: 0, labelRight: 'A、' + item.c1},
+                                {view: 'checkbox', label: '', name: 'b', labelWidth: 0, labelRight: 'B、' + item.c2},
+                                {view: 'checkbox', label: '', name: 'c', labelWidth: 0, labelRight: 'C、' + item.c3},
+                                {view: 'checkbox', label: '', name: 'd', labelWidth: 0, labelRight: 'D、' + item.c4},
                               ]
                             }
                           ]
@@ -100,23 +122,72 @@ export default class Exam extends JetView {
                       });
                       res.data.choice.forEach(function (item) {
                         p.addView({
-                          css: 'white-bg',
+                          css: 'white-bg question-panel',
                           rows: [
-                            {height: 20},
-                            {view: 'template', template: item.content, borderless: 1, autoheight: 1},
-                            {height: 20},
+                            {template: '', css: 'question-tip'},
+                            {template: '单选', css: 'question-type'},
+                            {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
                             {
-                              view: 'radio', label: '', id: item.id, vertical: 1,
-                              options: [
-                                {id: '1', value: 'A、' + item.c1},
-                                {id: '2', value: 'B、' + item.c2},
-                                {id: '3', value: 'C、' + item.c3},
-                                {id: '4', value: 'D、' + item.c4}
-                              ],
+                              cols: [
+                                {width: 10},
+                                {
+                                  view: 'radio', label: '', id: item.id, vertical: 1,
+                                  options: [
+                                    {id: '1', value: 'A、' + item.c1},
+                                    {id: '2', value: 'B、' + item.c2},
+                                    {id: '3', value: 'C、' + item.c3},
+                                    {id: '4', value: 'D、' + item.c4}
+                                  ]
+                                }
+                              ]
                             }
                           ]
                         });
                       });
+                      res.data.short.forEach(function (item) {
+                        p.addView({
+                          css: 'white-bg question-panel',
+                          rows: [
+                            {template: '', css: 'question-tip'},
+                            {template: '简答', css: 'question-type'},
+                            {
+                              view: 'template', template: `第${index++}题：` + item.content,
+                              borderless: 1, autoheight: 1, css: 'question-content'
+                            },
+                            {
+                              cols: [
+                                {width: 10},
+                                {view: 'textarea', label: '', id: item.id, height: 240},
+                                {width: 10}
+                              ]
+                            },
+                            {height: 10}
+                          ]
+                        });
+                      });
+                      p.addView({
+                        cols: [
+                          {},
+                          {
+                            view: 'button', value: '交卷', width: 120,
+                            click: function () {
+                              let complete = true;
+
+                              if (!complete) {
+                                webix.confirm({text: '您还有题目未完成，是否交卷？', title: '友情提示',
+                                  ok: '确定', cancel: '取消', callback: function (r) {
+                                    if (r) {
+                                      webix.alert('提交成功！');
+                                    }
+                                  }
+                                });
+                              }
+                            }
+                          },
+                          {}
+                        ]
+                      });
+                      p.addView({height: 5});
                     }
                   });
                 }

@@ -112,3 +112,38 @@
 .white-bg {
     background: #fff;
 }
+.question-panel {
+    position: relative;
+}
+.question-content > .webix_template{
+    padding: 20px 30px 20px 20px;
+}
+.question-tip {
+    width: 0 !important;
+    height: 0 !important;
+    border-width: 50px 0 0 50px !important;
+    border-left: 50px solid transparent;
+    border-top: 50px solid #45d0ef;
+    position: absolute;
+    right: 0;
+}
+.question-type {
+    position: absolute;
+    top: 4px;
+    right: -7px;
+    width: 50px !important;
+    height: 35px !important;
+    font-size: 12px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    transform: rotate(45deg);
+}
+.error-msg > div{
+    color: #fd1616;
+    font-size: 12px;
+}
+.label > div {
+    color: #fff;
+    cursor: pointer;
+}
