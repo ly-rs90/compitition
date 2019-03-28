@@ -27,7 +27,15 @@ export default class Mode extends JetView {
             {width: 60},
             {
               width: 300, css: 'mode-btn',
-              view: 'button', type: 'iconButtonTop', icon: 'fas fa-graduation-cap', label: '考试模式',
+              view: 'button', type: 'iconButtonTop', icon: 'fas fa-user-edit', label: '模拟考试',
+              click: function () {
+                this.$scope.show('/compitition/simulateexam');
+              }
+            },
+            {width: 60},
+            {
+              width: 300, css: 'mode-btn',
+              view: 'button', type: 'iconButtonTop', icon: 'fas fa-user-clock', label: '考试模式',
               click: function () {
                 this.$scope.show('/compitition/exam');
               }

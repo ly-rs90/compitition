@@ -20,18 +20,27 @@ export default class Compitition extends JetView {
             {view: 'label', label: '华东竞赛系统', css: 'toolbar-title', width: 200},
             {
               // hidden: 1,
+              id: 'comp:menu',
               cols: [
                 {
-                  view: 'label', label: '首页', css: 'label', width: 50, align: 'center',
+                  view: 'label', label: '首页', css: 'label label-link', width: 50, align: 'center',
                   click: function () {
                     this.$scope.show('./mode');
                   }
                 },
-                {view: 'label', label: '退出', css: 'label', width: 50, align: 'center'},
+                {
+                  view: 'label', label: '退出', css: 'label label-link', width: 50, align: 'center',
+                  click: function () {
+                    webix.storage.cookie.clear();
+                    $$('hello:user').hide();
+                    this.$scope.show('./login');
+                  }
+                },
               ]
             },
             {},
-            {view: 'label', label: '您好，XX用户！', align: 'center', css: 'toolbar-welcome', width: 200, id: 'hello:user'}
+            {view: 'label', label: '倒计时：01:30:23', width: 130, css: 'label', id: 'exam:time', hidden: 1},
+            {view: 'label', label: '您好，XX用户！', align: 'center', css: 'label', width: 200, id: 'hello:user', hidden: 1}
           ]
         },
         {$subview: true}
@@ -42,5 +51,6 @@ export default class Compitition extends JetView {
     let user = webix.storage.cookie.get('name');
     $$('hello:user').define('label', `您好，${user}！`);
     $$('hello:user').refresh();
+    $$('hello:user').show();
   }
 }

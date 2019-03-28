@@ -9,6 +9,8 @@ import * as webix from 'webix';
 import {JetView} from 'webix-jet';
 import {post} from '../models/post';
 
+let timeInterval;
+
 export default class Exam extends JetView {
   config() {
     return {
@@ -64,7 +66,7 @@ export default class Exam extends JetView {
               data: data,
               on: {
                 onItemClick: function (id) {
-                  post('/paper', {paperID: id}).then(function (r1) {
+                  post('/paper', {paperID: id, time: parseInt(new Date().getTime()/1000)}).then(function (r1) {
                     let res = r1.json();
                     if (res.code !== 0) {
                       webix.alert(res.info);
@@ -82,7 +84,7 @@ export default class Exam extends JetView {
                               rows: [
                                 {template: '', css: 'question-tip'},
                                 {template: '判断', css: 'question-type'},
-                                {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
+                                {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, height: 100, css: 'question-content'},
                                 {
                                   cols: [
                                     {},
@@ -172,12 +174,62 @@ export default class Exam extends JetView {
                             view: 'button', value: '交卷', width: 120,
                             click: function () {
                               let complete = true;
-
+                              let judgeResult = [];
+                              let choiceResult = [];
+                              let multiResult = [];
+                              let shortResult = [];
+                              res.data.judge.forEach(function (item) {
+                                let value = $$(item.id).getValue();
+                                if (value === '') complete = false;
+                                judgeResult.push({id: item.id, r: value});
+                              });
+                              res.data.choice.forEach(function (item) {
+                                let value = $$(item.id).getValue();
+                                if (value === '') complete = false;
+                                choiceResult.push({id: item.id, r: value});
+                              });
+                              res.data.multi.forEach(function (item) {
+                                let a = $$(item.id).getValues().a;
+                                let b = $$(item.id).getValues().b;
+                                let c = $$(item.id).getValues().c;
+                                let d = $$(item.id).getValues().d;
+                                let value = (a=='1'?'1':'') + (b=='1'?'2':'') + (c=='1'?'3':'') + (d=='1'?'4':'');
+                                if (value === '') complete = false;
+                                multiResult.push({id: item.id, r: value});
+                              });
+                              res.data.short.forEach(function (item) {
+                                let value = $$(item.id).getValue();
+                                if (value === '') complete = false;
+                                shortResult.push({id: item.id, r: value});
+                              });
+                              let postPaper = function () {
+                                post('/exam', {id: id,
+                                  judge: judgeResult, choice: choiceResult,
+                                  multi: multiResult, short: shortResult
+                                }).then(function (r1) {
+                                  let res = r1.json();
+                                  if (res.code === 0) {
+                                    webix.alert('提交成功！');
+                                  }
+                                  else {
+                                    webix.alert('提交失败，原因：' + res.info);
+                                  }
+                                });
+                              };
                               if (!complete) {
                                 webix.confirm({text: '您还有题目未完成，是否交卷？', title: '友情提示',
                                   ok: '确定', cancel: '取消', callback: function (r) {
                                     if (r) {
-                                      webix.alert('提交成功！');
+                                      postPaper();
+                                    }
+                                  }
+                                });
+                              }
+                              else {
+                                webix.confirm({text: '交卷后将不能再修改答案，是否交卷？', title: '友情提示',
+                                  ok: '确定', cancel: '取消', callback: function (r) {
+                                    if (r) {
+                                      postPaper();
                                     }
                                   }
                                 });
@@ -188,6 +240,27 @@ export default class Exam extends JetView {
                         ]
                       });
                       p.addView({height: 5});
+
+                      // 显示考试时间
+                      let setTime = function() {
+                        let timeLeft = 90*60 + res.data.time - parseInt(new Date().getTime()/1000);
+                        let hourLeft = parseInt(timeLeft / 3600);
+                        let minLeft = parseInt((timeLeft - hourLeft*3600) / 60);
+                        let secLeft = parseInt(timeLeft - hourLeft*3600 - minLeft*60);
+                        if (hourLeft < 0) hourLeft = 0;
+                        if (minLeft < 0) minLeft = 0;
+                        if (secLeft < 0) secLeft = 0;
+                        if (minLeft < 10) minLeft = '0' + minLeft;
+                        if (secLeft < 10) secLeft = '0' + secLeft;
+                        let timeLeftStr = '0' + hourLeft + ':' + minLeft + ':' + secLeft;
+                        $$('exam:time').define('label', `倒计时：${timeLeftStr}`);
+                        $$('exam:time').refresh();
+                        $$('exam:time').show();
+                      };
+                      setTime();
+                      timeInterval = setInterval(function () {
+                        setTime();
+                      }, 1000);
                     }
                   });
                 }
@@ -197,5 +270,9 @@ export default class Exam extends JetView {
         });
       }
     });
+  }
+  destroy() {
+    $$('exam:time').hide();
+    if (timeInterval) clearInterval(timeInterval);
   }
 }

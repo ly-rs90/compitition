@@ -16,6 +16,8 @@ from handler.papermanager import PaperManager
 from handler.paper import Paper
 from handler.register import Register
 from handler.login import Login
+from handler.exam import Exam
+from handler.simulate import Simulate
 
 from tornado.options import define, options
 define("port", default=80, help="run on the given port", type=int)
@@ -36,6 +38,8 @@ class Application(tornado.web.Application):
         handlers = [
             (r'/register', Register),
             (r'/login', Login),
+            (r'/simulate', Simulate),
+            (r'/exam', Exam),
             (r'/judge', Judge),
             (r'/paper', Paper),
             (r'/paperpublish', PaperPublish),

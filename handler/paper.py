@@ -25,7 +25,7 @@ class Paper(RequestHandler):
                     select begin_time, end_time from paper_info where table_name=?
                 ''', (paper_id, )).fetchone()
                 if r and r[0] <= now <= r[1]:
-                    msg.data = {'judge': [], 'choice': [], 'multi': [], 'short': []}
+                    msg.data = {'judge': [], 'choice': [], 'multi': [], 'short': [], 'time': ''}
                     judge = []
                     choice = []
                     multi_choice = []
@@ -76,9 +76,25 @@ class Paper(RequestHandler):
                     '''.format(param)).fetchall()
                     for n in r:
                         msg.data['short'].append({'id': n[0], 'content': n[1]})
+
+                    user = self.get_secure_cookie('userID').decode()
+                    time_start = int(self.get_argument('time'))
+                    r = self.application.db.execute('''
+                        select user_id from exam_start where user_id=?
+                    ''', (user,)).fetchall()
+                    if len(r) < 1:
+                        self.application.db.execute('''
+                            insert into exam_start (user_id, time_client, time_server) values (?, ?, ?)
+                        ''', (user, time_start, int(time.time())))
+                    r = self.application.db.execute('''
+                        select time_client from exam_start where user_id=?
+                    ''', (user, )).fetchone()
+                    msg.data['time'] = r[0]
+                    self.application.db.commit()
                 else:
                     msg.code = 1
                     msg.info = '考试已结束!'
+
             except Exception as e:
                 msg.code = 1
                 msg.info = e.args[0]

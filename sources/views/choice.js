@@ -113,9 +113,24 @@ export default class Choice extends JetView {
                     {
                       view: 'button', value: '下一题',
                       click: function () {
-                        let num = webix.storage.session.get('num');
-                        getContent(num+1);
-                        webix.storage.session.put('num', num+1);
+                        if ($$('ans').getValue() === '1' || $$('ans').getValue() === '2' ||
+                          $$('ans').getValue() === '3' || $$('ans').getValue() === '4') {
+                          let num = webix.storage.session.get('num');
+                          getContent(num+1);
+                          webix.storage.session.put('num', num+1);
+                        }
+                        else {
+                          webix.confirm({title: '友情提示', text: '本题您未给出答案，是否跳过？',
+                            ok: '确定', cancel: '取消',
+                            callback: function (r) {
+                              if (r) {
+                                let num = webix.storage.session.get('num');
+                                getContent(num+1);
+                                webix.storage.session.put('num', num+1);
+                              }
+                            }
+                          });
+                        }
                       }
                     },
                     {}
@@ -132,7 +147,13 @@ export default class Choice extends JetView {
     };
   }
   init(_$view, _$) {
-    getContent(0);
-    webix.storage.session.put('num', 0);
+    post('/choice', {mode: 'get-num'}).then(function (r) {
+      let res = r.json();
+      if (res.code !== 0) {
+        webix.alert(res.info);
+      }
+      getContent(res.data);
+      webix.storage.session.put('num', res.data);
+    });
   }
 }

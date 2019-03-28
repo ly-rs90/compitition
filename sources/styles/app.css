@@ -65,9 +65,6 @@
     width: 25px !important;
     height: 25px !important;
 }
-.toolbar-welcome > div {
-    color: #fff;
-}
 .train-btn button {
     border-radius: 10px;
 }
@@ -145,5 +142,22 @@
 }
 .label > div {
     color: #fff;
+}
+.label-link {
     cursor: pointer;
+}
+.result-type {
+    width: 30px !important;
+    height: 30px !important;
+    position: absolute;
+    padding: 0 !important;
+    left: -8px !important;
+    top: -1px !important;
+    background: transparent !important;
+}
+.result-type .fa-check {
+    color: #02ca1c;
+}
+.result-type .fa-times {
+    color: #ff3508;
 }

@@ -6,6 +6,7 @@
  @Description:
  */
 import {JetView} from 'webix-jet';
+import * as webix from 'webix';
 
 export default class Admin extends JetView {
   config() {
@@ -16,13 +17,17 @@ export default class Admin extends JetView {
           data: [
             {id: 'paperpublish', value: '发布试卷', icon: 'fas fa-file-alt'},
             {id: 'papermanager', value: '试卷管理', icon: 'fas fa-cog'},
-            {id: 'questionmanager', value: '试题管理', icon: 'fas fa-download'},
+            // {id: 'questionmanager', value: '试题管理', icon: 'fas fa-download'},
             {id: 'examresult', value: '考试结果', icon: 'fas fa-graduation-cap'},
-            {id: 'logout', value: '安全退出', icon: 'fas fa-power-off'}
+            {id: 'logout', value: '安全退出', icon: 'fas fa-power-off'},
           ],
           on: {
             onAfterSelect: function (id) {
-              if (id !== 'logout') {
+              if (id === 'logout') {
+                webix.storage.cookie.clear();
+                this.$scope.show('/login');
+              }
+              else {
                 this.$scope.show('./'+id);
               }
             }
@@ -35,5 +40,8 @@ export default class Admin extends JetView {
         }
       ]
     };
+  }
+  init(_$view, _$) {
+    $$('comp:menu').hide();
   }
 }

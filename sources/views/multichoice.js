@@ -79,23 +79,6 @@ export default class MultiChoice extends JetView {
                     {view: 'checkbox', label: '', labelWidth: 0, labelRight: 'B', width: 80, id: 'choice:b'},
                     {view: 'checkbox', label: '', labelWidth: 0, labelRight: 'C', width: 80, id: 'choice:c'},
                     {view: 'checkbox', label: '', labelWidth: 0, labelRight: 'D', width: 80, id: 'choice:d'},
-                    // {
-                    //   view: 'radio', label: '', width: 280, align: 'center', id: 'ans', options: [
-                    //     {id: '0', value: 'A'},
-                    //     {id: '1', value: 'B'},
-                    //     {id: '2', value: 'C'},
-                    //     {id: '3', value: 'D'},
-                    //   ],
-                    //   on: {
-                    //     onChange: function (newv) {
-                    //       let ans = webix.storage.session.get('ans');
-                    //       let ans_str = ['A', 'B', 'C', 'D'];
-                    //       if (newv != ans) {
-                    //         webix.alert('回答错误！正确答案是：' + ans_str[ans]);
-                    //       }
-                    //     }
-                    //   }
-                    // },
                     {}
                   ]
                 },
@@ -120,9 +103,39 @@ export default class MultiChoice extends JetView {
                     {
                       view: 'button', value: '下一题',
                       click: function () {
-                        let num = webix.storage.session.get('num');
-                        getContent(num+1);
-                        webix.storage.session.put('num', num+1);
+                        let a = $$('choice:a').getValue();
+                        let b = $$('choice:b').getValue();
+                        let c = $$('choice:c').getValue();
+                        let d = $$('choice:d').getValue();
+                        let ansStr = (a?'1':'') + (b?'2':'') + (c?'3':'') + (d?'4':'');
+
+                        if (ansStr === '') {
+                          webix.confirm({title: '友情提示', text: '本题您未给出答案，是否跳过？',
+                            ok: '确定', cancel: '取消',
+                            callback: function (r) {
+                              if (r) {
+                                let num = webix.storage.session.get('num');
+                                getContent(num+1);
+                                webix.storage.session.put('num', num+1);
+                              }
+                            }
+                          });
+                          return;
+                        }
+                        let ans = webix.storage.session.get('ans');
+                        if (ans !== ansStr) {
+                          let ans_str = ['', 'A', 'B', 'C', 'D'];
+                          let r = '';
+                          for (let i=0; i<ans.length;i++) {
+                            r += ans_str[ans[i]];
+                          }
+                          webix.alert('正确答案是：' + r);
+                        }
+                        else {
+                          let num = webix.storage.session.get('num');
+                          getContent(num+1);
+                          webix.storage.session.put('num', num+1);
+                        }
                       }
                     },
                     {width: 50},
@@ -152,7 +165,13 @@ export default class MultiChoice extends JetView {
     };
   }
   init(_$view, _$) {
-    getContent(0);
-    webix.storage.session.put('num', 0);
+    post('/multichoice', {mode: 'get-num'}).then(function (r) {
+      let res = r.json();
+      if (res.code !== 0) {
+        webix.alert(res.info);
+      }
+      getContent(res.data);
+      webix.storage.session.put('num', res.data);
+    });
   }
 }

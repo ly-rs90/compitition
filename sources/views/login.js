@@ -62,10 +62,16 @@ export default class Login extends JetView {
                         if (res.code === 0) {
                           webix.storage.cookie.put('name', res.data);
                           _this.$scope.show('/compitition/admin/paperpublish');
+                          $$('hello:user').define('label', `您好，${res.data}！`);
+                          $$('hello:user').refresh();
+                          $$('hello:user').show();
                         }
                         else if (res.code === 1) {
                           webix.storage.cookie.put('name', res.data);
                           _this.$scope.show('/compitition/mode');
+                          $$('hello:user').define('label', `您好，${res.data}！`);
+                          $$('hello:user').refresh();
+                          $$('hello:user').show();
                         }
                         else {
                           $$('error').define('label', res.info);

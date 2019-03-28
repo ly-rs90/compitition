@@ -56,3 +56,28 @@ create table if not exists short_answer (
   content text not null unique,
   ans text
 );
+-- 考试结果
+create table if not exists exam_result (
+  paper_id text not null, -- 试卷
+  user_id text not null, -- 用户id
+  content_id text not null, -- 试题
+  content_type integer check ( content_type in (0, 1, 2, 3) ),
+  ans text, -- 答案
+  foreign key (user_id) references user(id) on delete cascade
+);
+-- 考试开始时间
+create table if not exists exam_start (
+  user_id text not null,  -- 用户id
+  time_client integer not null,  -- 客户端开考时间,
+  time_server integer not null,  -- 服务端时间
+  foreign key (user_id) references user(id) on delete cascade
+);
+-- 培训模式答题记录
+create table if not exists answer_record (
+  user_id text primary key not null,
+  judge_num integer check ( judge_num >= 0 ),
+  choice_num integer check ( choice_num >= 0 ),
+  multi_num integer check ( multi_num >= 0 ),
+  short_num integer check ( short_num >= 0 ),
+  foreign key (user_id) references user(id) on delete cascade
+);

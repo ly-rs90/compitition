@@ -43,6 +43,7 @@ class Choice(RequestHandler):
     def post(self, *args, **kwargs):
         msg = Msg()
         mode = self.get_argument('mode', '')
+        user = self.get_secure_cookie('userID').decode()
 
         if mode == 'train':
             msg.data = {}
@@ -57,6 +58,26 @@ class Choice(RequestHandler):
                     msg.data['c3'] = r[3]
                     msg.data['c4'] = r[4]
                     msg.data['ans'] = r[5]
+                    self.application.db.execute('''
+                        update answer_record set choice_num=? where user_id=?
+                    ''', (num, user))
+                    self.application.db.commit()
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'get-num':
+            try:
+                r = self.application.db.execute('''
+                    select choice_num from answer_record where user_id=?
+                ''', (user, )).fetchone()
+                if r:
+                    msg.data = r[0]
+                else:
+                    self.application.db.execute('''
+                        insert into answer_record (user_id, judge_num, choice_num, multi_num, short_num) values(?, ?, ?, ?, ?)
+                    ''', (user, 0, 0, 0, 0))
+                    self.application.db.commit()
+                    msg.data = 0
             except Exception as e:
                 msg.code = 1
                 msg.info = e.args[0]

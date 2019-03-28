@@ -28,6 +28,8 @@ for n in range(1, total_rows):
     ans = str(row[6].value).strip()
     ans_p = re.compile('\d')
     ans = ''.join(re.findall(ans_p, ans))
+    if ans.endswith('0'):
+        ans = ans[:-1]
     _id = uuid.uuid4().hex
     try:
         con.execute('''insert into multi_choice (id, content, c1, c2, c3, c4, ans) values (?, ?, ?, ?, ?, ?, ?)''',
