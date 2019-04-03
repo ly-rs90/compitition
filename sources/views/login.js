@@ -48,9 +48,9 @@ export default class Login extends JetView {
                 {},
                 {view: 'label', label: '用户登录', align: 'center', css: 'login-form-title'},
                 {},
-                {view: 'text', name: 'user', label: '用户', labelWidth: 50, required: 1},
+                {view: 'text', name: 'user', label: '用户名', labelWidth: 70, required: 1},
                 {height: 5},
-                {view: 'text', name: 'password', label: '密码', labelWidth: 50, type: 'password', required: 1},
+                {view: 'text', name: 'password', label: '密码', labelWidth: 70, type: 'password', required: 1},
                 {view: 'label', hidden: 1, id: 'error', css: 'error-msg'},
                 {
                   view: 'button', value: '登录', type: 'form', click: function () {
@@ -110,7 +110,7 @@ export default class Login extends JetView {
                                 view: 'form', borderless: 1, id: 'register:form',
                                 elements: [
                                   {
-                                    view: 'text', label: '员工号', required: 1, name: 'id',
+                                    view: 'text', label: '用户名', required: 1, name: 'id',
                                     validate: function (v) {
                                       let p = /^\w+$/;
                                       return p.test(v);

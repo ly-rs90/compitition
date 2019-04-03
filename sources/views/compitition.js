@@ -33,7 +33,7 @@ export default class Compitition extends JetView {
                   click: function () {
                     webix.storage.cookie.clear();
                     $$('hello:user').hide();
-                    this.$scope.show('./login');
+                    this.$scope.show('/login');
                   }
                 },
               ]

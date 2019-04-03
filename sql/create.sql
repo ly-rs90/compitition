@@ -81,3 +81,16 @@ create table if not exists answer_record (
   short_num integer check ( short_num >= 0 ),
   foreign key (user_id) references user(id) on delete cascade
 );
+-- 考试成绩
+create table if not exists exam_score (
+    user_id text not null,
+    paper_id text not null,
+    judge_score integer not null check ( judge_score >= 0 ),      -- 判断题得分
+    choice_score integer not null check ( choice_score >= 0 ),    -- 选择题得分
+    multi_score integer not null check ( multi_score >= 0 ),      -- 多选题得分
+    short_score integer not null check ( short_score >= 0 ),      -- 简答题得分
+    total_score integer not null check ( total_score >= 0 ),      -- 总分
+    pass text not null default '不及格' check ( pass in ('不及格', '及格') ),     -- 是否及格
+    foreign key (user_id) references user(id) on delete cascade,
+    primary key (user_id, paper_id)
+);

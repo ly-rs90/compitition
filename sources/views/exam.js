@@ -142,7 +142,8 @@ export default class Exam extends JetView {
                                   ]
                                 }
                               ]
-                            }
+                            },
+                            {height: 10}
                           ]
                         });
                       });
@@ -210,6 +211,7 @@ export default class Exam extends JetView {
                                   let res = r1.json();
                                   if (res.code === 0) {
                                     webix.alert('提交成功！');
+                                    p.$scope.show('/login');
                                   }
                                   else {
                                     webix.alert('提交失败，原因：' + res.info);
@@ -259,7 +261,11 @@ export default class Exam extends JetView {
                       };
                       setTime();
                       timeInterval = setInterval(function () {
-                        setTime();
+                        try {
+                          setTime();
+                        }catch (e) {
+                          console.log(e.toString());
+                        }
                       }, 1000);
                     }
                   });
@@ -272,7 +278,11 @@ export default class Exam extends JetView {
     });
   }
   destroy() {
-    $$('exam:time').hide();
+    try {
+      $$('exam:time').hide();
+    }catch (e) {
+      console.log(e.toString());
+    }
     if (timeInterval) clearInterval(timeInterval);
   }
 }

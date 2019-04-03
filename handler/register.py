@@ -22,7 +22,7 @@ class Register(RequestHandler):
         hash_pass_word = hash_str(user_id + pass_word)
 
         try:
-            if user_name == 'admin':
+            if user_id == 'admin':
                 role = 0
             else:
                 role = 1

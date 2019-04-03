@@ -57,6 +57,9 @@ class Exam(RequestHandler):
             self.application.db.execute('''
                 insert into exam_result (paper_id, user_id, content_id, content_type, ans) values {}
             '''.format(temp))
+            self.application.db.execute('''
+                delete from exam_start where user_id=?
+            ''', (user, ))
             self.application.db.commit()
         except Exception as e:
             msg.code = 1
