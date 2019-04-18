@@ -10,6 +10,7 @@
 import json
 from tornado.web import RequestHandler
 from .msg import Msg
+from .util import get_uuid
 
 
 class MultiChoice(RequestHandler):
@@ -81,4 +82,84 @@ class MultiChoice(RequestHandler):
             except Exception as e:
                 msg.code = 1
                 msg.info = e.args[0]
+        if mode == 'get-count':
+            content = self.get_argument('content', '').strip()
+            try:
+                count = self.application.db.execute('''
+                    select count(*) from multi_choice where content like '%{}%'
+                '''.format(content)).fetchone()[0]
+                msg.data = count
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'get-question':
+            content = self.get_argument('content', '').strip()
+            page = int(self.get_argument('page', 0))
+            msg.data = []
+            try:
+                r = self.application.db.execute('''
+                    select id, content, c1, c2, c3, c4, ans from multi_choice where content like '%{}%' limit 30 offset ?
+                '''.format(content), (page*30, )).fetchall()
+                for n in r:
+                    msg.data.append({
+                        'id': n[0],
+                        'content': n[1],
+                        'c1': n[2],
+                        'c2': n[3],
+                        'c3': n[4],
+                        'c4': n[5],
+                        'ans': n[6]
+                    })
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'add':
+            content = self.get_argument('content', '').strip()
+            c1 = self.get_argument('c1', '').strip()
+            c2 = self.get_argument('c2', '').strip()
+            c3 = self.get_argument('c3', '').strip()
+            c4 = self.get_argument('c4', '').strip()
+            ans = self.get_argument('ans', '1')
+            if not content:
+                msg.code = 1
+                msg.info = '题目不能为空！'
+            else:
+                try:
+                    self.application.db.execute('''
+                        insert into multi_choice (id, content, c1, c2, c3, c4, ans) values(?, ?, ?, ?, ?, ?, ?)
+                    ''', (get_uuid(), content, c1, c2, c3, c4, ans))
+                    self.application.db.commit()
+                except Exception as e:
+                    msg.code = 1
+                    msg.info = e.args[0]
+        if mode == 'del':
+            _id = self.get_argument('id', '')
+            try:
+                self.application.db.execute('''
+                    delete from multi_choice where id=?
+                ''', (_id, ))
+                self.application.db.commit()
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'modify':
+            _id = self.get_argument('id', '')
+            content = self.get_argument('content', '').strip()
+            c1 = self.get_argument('c1', '').strip()
+            c2 = self.get_argument('c2', '').strip()
+            c3 = self.get_argument('c3', '').strip()
+            c4 = self.get_argument('c4', '').strip()
+            ans = self.get_argument('ans', '1')
+            if not content:
+                msg.code = 1
+                msg.info = '题目不能为空！'
+            else:
+                try:
+                    self.application.db.execute('''
+                        update multi_choice set content=?, ans=?, c1=?, c2=?, c3=?, c4=? where id=?
+                    ''', (content, ans, c1, c2, c3, c4, _id))
+                    self.application.db.commit()
+                except Exception as e:
+                    msg.code = 1
+                    msg.info = e.args[0]
         self.write(json.dumps(msg.json()))

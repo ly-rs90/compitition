@@ -17,7 +17,7 @@ export default class Admin extends JetView {
           data: [
             {id: 'paperpublish', value: '发布试卷', icon: 'fas fa-file-alt'},
             {id: 'papermanager', value: '试卷管理', icon: 'fas fa-cog'},
-            // {id: 'questionmanager', value: '试题管理', icon: 'fas fa-download'},
+            {id: 'questionmanager', value: '试题管理', icon: 'fas fa-th-list'},
             {id: 'examresult', value: '考试结果', icon: 'fas fa-graduation-cap'},
             {id: 'logout', value: '安全退出', icon: 'fas fa-power-off'},
           ],

@@ -10,6 +10,7 @@
 import json
 from tornado.web import RequestHandler
 from .msg import Msg
+from .util import get_uuid
 
 
 class Judge(RequestHandler):
@@ -79,4 +80,72 @@ class Judge(RequestHandler):
             except Exception as e:
                 msg.code = 1
                 msg.info = e.args[0]
+        if mode == 'get-count':
+            content = self.get_argument('content', '').strip()
+            try:
+                count = self.application.db.execute('''
+                    select count(*) from judge where content like '%{}%'
+                '''.format(content)).fetchone()[0]
+                msg.data = count
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'get-question':
+            content = self.get_argument('content', '').strip()
+            page = int(self.get_argument('page', 0))
+            msg.data = []
+            try:
+                r = self.application.db.execute('''
+                    select id, content, ans from judge where content like '%{}%' limit 30 offset ?
+                '''.format(content), (page*30, )).fetchall()
+                for n in r:
+                    msg.data.append({
+                        'id': n[0],
+                        'content': n[1],
+                        'ans': n[2]
+                    })
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'add':
+            content = self.get_argument('content', '').strip()
+            ans = int(self.get_argument('ans', 0))
+            if not content:
+                msg.code = 1
+                msg.info = '题目不能为空！'
+            else:
+                try:
+                    self.application.db.execute('''
+                        insert into judge (id, content, ans) values(?, ?, ?)
+                    ''', (get_uuid(), content, ans))
+                    self.application.db.commit()
+                except Exception as e:
+                    msg.code = 1
+                    msg.info = e.args[0]
+        if mode == 'del':
+            _id = self.get_argument('id', '')
+            try:
+                self.application.db.execute('''
+                    delete from judge where id=?
+                ''', (_id, ))
+                self.application.db.commit()
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
+        if mode == 'modify':
+            _id = self.get_argument('id', '')
+            content = self.get_argument('content', '').strip()
+            ans = int(self.get_argument('ans', 0))
+            if not content:
+                msg.code = 1
+                msg.info = '题目不能为空！'
+            else:
+                try:
+                    self.application.db.execute('''
+                        update judge set content=?, ans=? where id=?
+                    ''', (content, ans, _id))
+                    self.application.db.commit()
+                except Exception as e:
+                    msg.code = 1
+                    msg.info = e.args[0]
         self.write(json.dumps(msg.json()))

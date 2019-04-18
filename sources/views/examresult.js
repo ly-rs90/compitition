@@ -201,6 +201,7 @@ export default class ExamResult extends JetView {
   destroy() {
     if (e1){
       e1.dispose();
+      e1 = undefined;
     }
   }
 }

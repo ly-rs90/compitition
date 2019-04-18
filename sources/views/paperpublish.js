@@ -210,7 +210,7 @@ export default class PaperPublish extends JetView {
             {
               header: '<div class="tab-header">判断题</div>',
               body: {
-                view: 'datatable', id: 'paper:judge', checkboxRefresh: 1, editable: 1, scroll: 'y',
+                view: 'datatable', id: 'paper:judge', checkboxRefresh: 1, editable: 1, scroll: 'y', css: 'table',
                 columns: [
                   {id: 'check', header: '', template: custom_checkbox, width: 40},
                   {id: 'index', header: '#', adjust: 1},
@@ -251,7 +251,7 @@ export default class PaperPublish extends JetView {
             {
               header: '<div class="tab-header">单选题</div>',
               body: {
-                view: 'datatable', id: 'paper:choice', checkboxRefresh: 1, editable: 1, scroll: 'y',
+                view: 'datatable', id: 'paper:choice', checkboxRefresh: 1, editable: 1, scroll: 'y', css: 'table',
                 columns: [
                   {id: 'check', header: '', template: custom_checkbox, width: 40},
                   {id: 'index', header: '#', adjust: 1},
@@ -292,7 +292,7 @@ export default class PaperPublish extends JetView {
             {
               header: '<div class="tab-header">多选题</div>',
               body: {
-                view: 'datatable', id: 'paper:mutlichoice', checkboxRefresh: 1, editable: 1, scroll: 'y',
+                view: 'datatable', id: 'paper:mutlichoice', checkboxRefresh: 1, editable: 1, scroll: 'y', css: 'table',
                 columns: [
                   {id: 'check', header: '', template: custom_checkbox, width: 40},
                   {id: 'index', header: '#', adjust: 1},
@@ -333,7 +333,7 @@ export default class PaperPublish extends JetView {
             {
               header: '<div class="tab-header">简答题</div>',
               body: {
-                view: 'datatable', id: 'paper:shortans', checkboxRefresh: 1, editable: 1, scroll: 'y',
+                view: 'datatable', id: 'paper:shortans', checkboxRefresh: 1, editable: 1, scroll: 'y', css: 'table',
                 columns: [
                   {id: 'check', header: '', template: custom_checkbox, width: 40},
                   {id: 'index', header: '#', adjust: 1},

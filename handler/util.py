@@ -9,6 +9,7 @@
 """
 import difflib
 import hashlib
+import uuid
 # import jieba
 # from gensim import corpora, models, similarities
 
@@ -17,6 +18,10 @@ def hash_str(s):
     m5 = hashlib.md5()
     m5.update(s.encode('utf-8'))
     return m5.hexdigest()
+
+
+def get_uuid():
+    return uuid.uuid4().hex
 
 
 def similar_simple(doc, test_str):

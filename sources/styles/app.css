@@ -161,3 +161,9 @@
 .result-type .fa-times {
     color: #ff3508;
 }
+.pager {
+    text-align: center;
+}
+.table .webix_cell {
+    text-overflow: ellipsis;
+}
