@@ -19,6 +19,7 @@ from handler.login import Login
 from handler.exam import Exam
 from handler.simulate import Simulate
 from handler.examresult import ExamResult
+from handler.user import User
 
 from tornado.options import define, options
 define("port", default=80, help="run on the given port", type=int)
@@ -38,6 +39,7 @@ class Application(tornado.web.Application):
         self.db = sqlite3.connect('data.db')
         handlers = [
             (r'/register', Register),
+            (r'/user', User),
             (r'/login', Login),
             (r'/simulate', Simulate),
             (r'/exam', Exam),

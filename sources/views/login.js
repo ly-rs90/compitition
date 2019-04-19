@@ -53,7 +53,7 @@ export default class Login extends JetView {
                 {view: 'text', name: 'password', label: '密码', labelWidth: 70, type: 'password', required: 1},
                 {view: 'label', hidden: 1, id: 'error', css: 'error-msg'},
                 {
-                  view: 'button', value: '登录', type: 'form', click: function () {
+                  view: 'button', value: '登录', type: 'form', hotkey: 'enter', click: function () {
                     let _this = this;
                     let form = $$('login:form');
                     if (form.validate()) {
