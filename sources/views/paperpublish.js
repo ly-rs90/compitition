@@ -124,8 +124,6 @@ export default class PaperPublish extends JetView {
             {view: 'counter', label: '及格分数线：', labelWidth: 100, min: 0, max: 100, step: 1, value: 95, id: 'pass:score'},
             {
               cols: [
-                // {view: 'button', value: '试题预览', autowidth: 1},
-                // {width: 10},
                 {
                   view: 'button', value: '发布试卷', autowidth: 1,
                   click: function () {
@@ -196,6 +194,138 @@ export default class PaperPublish extends JetView {
                     }).show();
                   }
                 },
+                {
+                  view: 'button', value: '试卷预览', autowidth: 1,
+                  click: function () {
+                    webix.ui({
+                      view:"window",
+                      id:"win1", move: 1,
+                      width: 800, position: 'center', modal: 1, height: window.innerHeight*0.9,
+                      head:{
+                        view:"toolbar", margin:-4, cols:[
+                          { view:"label", label: "试卷预览" },
+                          { view:"icon", icon:"fas fa-times", click:function(){
+                              $$('win1').close();
+                            }}
+                        ]
+                      },
+                      body: {
+                        view: 'scrollview', scroll: 'y', borderless: 1,
+                        body: {
+                          type: 'wide', id: 'paperview:container',
+                          rows: []
+                        }
+                      },
+                      on: {
+                        onShow: function () {
+                          post('/paperview',
+                            {judge: judge, choice: choice, multi: multiChoice, short: shortAns}).then(function (r) {
+                            let res = r.json();
+                            let v = {
+                              type: 'wide',
+                              rows: []
+                            };
+                            if (res.code !== 0) {
+                              webix.alert(res.info);
+                            }
+                            else {
+                              let index = 1;
+                              res.data.judge.forEach(function (item) {
+                                v.rows.push({
+                                  css: 'white-bg question-panel', height: 150,
+                                  rows: [
+                                    {template: '', css: 'question-tip'},
+                                    {template: '判断', css: 'question-type'},
+                                    {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, height: 100, css: 'question-content'},
+                                    {
+                                      cols: [
+                                        {},
+                                        {
+                                          view: 'radio', label: '', width: 140, align: 'center', id: item.id, options: [
+                                            {id: '0', value: '错'},
+                                            {id: '1', value: '对'}
+                                          ],
+                                        },
+                                        {}
+                                      ]
+                                    },
+                                    {height: 10}
+                                  ]
+                                });
+                              });
+                              res.data.multi.forEach(function (item) {
+                                v.rows.push({
+                                  css: 'white-bg question-panel', height: 270,
+                                  rows: [
+                                    {template: '', css: 'question-tip'},
+                                    {template: '多选', css: 'question-type'},
+                                    {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
+                                    {
+                                      view: 'form', id: item.id, borderless: 1,
+                                      elements: [
+                                        {view: 'checkbox', label: '', name: 'a', labelWidth: 0, labelRight: 'A、' + item.c1},
+                                        {view: 'checkbox', label: '', name: 'b', labelWidth: 0, labelRight: 'B、' + item.c2},
+                                        {view: 'checkbox', label: '', name: 'c', labelWidth: 0, labelRight: 'C、' + item.c3},
+                                        {view: 'checkbox', label: '', name: 'd', labelWidth: 0, labelRight: 'D、' + item.c4},
+                                      ]
+                                    }
+                                  ]
+                                });
+                              });
+                              res.data.choice.forEach(function (item) {
+                                v.rows.push({
+                                  css: 'white-bg question-panel', height: 200,
+                                  rows: [
+                                    {template: '', css: 'question-tip'},
+                                    {template: '单选', css: 'question-type'},
+                                    {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
+                                    {
+                                      cols: [
+                                        {width: 10},
+                                        {
+                                          view: 'radio', label: '', id: item.id, vertical: 1,
+                                          options: [
+                                            {id: '1', value: 'A、' + item.c1},
+                                            {id: '2', value: 'B、' + item.c2},
+                                            {id: '3', value: 'C、' + item.c3},
+                                            {id: '4', value: 'D、' + item.c4}
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {height: 10}
+                                  ]
+                                });
+                              });
+                              res.data.short.forEach(function (item) {
+                                v.rows.push({
+                                  css: 'white-bg question-panel', height: 310,
+                                  rows: [
+                                    {template: '', css: 'question-tip'},
+                                    {template: '简答', css: 'question-type'},
+                                    {
+                                      view: 'template', template: `第${index++}题：` + item.content,
+                                      borderless: 1, autoheight: 1, css: 'question-content'
+                                    },
+                                    {
+                                      cols: [
+                                        {width: 10},
+                                        {view: 'textarea', label: '', id: item.id, height: 240},
+                                        {width: 10}
+                                      ]
+                                    },
+                                    {height: 10}
+                                  ]
+                                });
+                              });
+                              $$('paperview:container').addView(v);
+                            }
+                          });
+                        }
+                      }
+                    }).show();
+                  }
+                },
                 {}
               ]
             },
@@ -257,9 +387,6 @@ export default class PaperPublish extends JetView {
                   {id: 'index', header: '#', adjust: 1},
                   {id: 'content', header: '题目', fillspace: 1}
                 ],
-                // scheme:{
-                //   $init:function(obj){ obj.index = this.count(); }
-                // },
                 on:{
                   "data->onStoreUpdated":function(){
                     this.data.each(function(obj, i){
@@ -298,9 +425,6 @@ export default class PaperPublish extends JetView {
                   {id: 'index', header: '#', adjust: 1},
                   {id: 'content', header: '题目', fillspace: 1}
                 ],
-                // scheme:{
-                //   $init:function(obj){ obj.index = this.count(); }
-                // },
                 on:{
                   "data->onStoreUpdated":function(){
                     this.data.each(function(obj, i){
@@ -339,9 +463,6 @@ export default class PaperPublish extends JetView {
                   {id: 'index', header: '#', adjust: 1},
                   {id: 'content', header: '题目', fillspace: 1}
                 ],
-                // scheme:{
-                //   $init:function(obj){ obj.index = this.count(); }
-                // },
                 on:{
                   "data->onStoreUpdated":function(){
                     this.data.each(function(obj, i){
