@@ -25,7 +25,8 @@ create table if not exists judge (
   num integer primary key autoincrement,
   id text not null,
   content text not null unique,
-  ans integer check ( ans in (0, 1) )
+  ans integer check ( ans in (0, 1) ),
+  use integer default 1 check ( use in (0, 1) )   -- 是否启用试题
 );
 -- 选择题
 create table if not exists choice (
@@ -36,7 +37,8 @@ create table if not exists choice (
   c2 text,
   c3 text,
   c4 text,
-  ans text check ( ans in ('1', '2', '3', '4') )
+  ans text check ( ans in ('1', '2', '3', '4') ),
+  use integer default 1 check ( use in (0, 1) )   -- 是否启用试题
 );
 -- 多项选择题
 create table if not exists multi_choice (
@@ -47,14 +49,16 @@ create table if not exists multi_choice (
   c2 text,
   c3 text,
   c4 text,
-  ans text
+  ans text,
+  use integer default 1 check ( use in (0, 1) )   -- 是否启用试题
 );
 -- 简答题
 create table if not exists short_answer (
   num integer primary key autoincrement,
   id text not null,
   content text not null unique,
-  ans text
+  ans text,
+  use integer default 1 check ( use in (0, 1) )   -- 是否启用试题
 );
 -- 考试结果
 create table if not exists exam_result (

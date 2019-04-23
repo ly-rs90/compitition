@@ -19,8 +19,10 @@ class MultiChoice(RequestHandler):
         count = self.get_argument('count', 0)
         start = self.get_argument('start', 0)
         try:
-            total_count = self.application.db.execute('''select count(*) from multi_choice''').fetchone()[0]
-            r = self.application.db.execute('''select id, content from multi_choice limit ? offset ?''', (count, start)).fetchall()
+            total_count = self.application.db.execute('''select count(*) from multi_choice where use=1''').fetchone()[0]
+            r = self.application.db.execute('''
+                select id, content from multi_choice where use=1 limit ? offset ?
+            ''', (count, start)).fetchall()
             data = []
             for n in r:
                 data.append({'id': n[0], 'content': n[1]})
@@ -98,7 +100,7 @@ class MultiChoice(RequestHandler):
             msg.data = []
             try:
                 r = self.application.db.execute('''
-                    select id, content, c1, c2, c3, c4, ans from multi_choice where content like '%{}%' limit 30 offset ?
+                    select id, content, c1, c2, c3, c4, ans, use from multi_choice where content like '%{}%' limit 30 offset ?
                 '''.format(content), (page*30, )).fetchall()
                 for n in r:
                     msg.data.append({
@@ -108,7 +110,8 @@ class MultiChoice(RequestHandler):
                         'c2': n[3],
                         'c3': n[4],
                         'c4': n[5],
-                        'ans': n[6]
+                        'ans': n[6],
+                        'use': n[7]
                     })
             except Exception as e:
                 msg.code = 1
@@ -133,11 +136,12 @@ class MultiChoice(RequestHandler):
                     msg.code = 1
                     msg.info = e.args[0]
         if mode == 'del':
-            _id = self.get_argument('id', '')
+            _id = eval(self.get_argument('id', '[]'))
+            id_str = '\'' + ','.join(_id).replace(',', '\',\'') + '\''
             try:
                 self.application.db.execute('''
-                    delete from multi_choice where id=?
-                ''', (_id, ))
+                    delete from multi_choice where id in ({})
+                '''.format(id_str))
                 self.application.db.commit()
             except Exception as e:
                 msg.code = 1
@@ -162,4 +166,16 @@ class MultiChoice(RequestHandler):
                 except Exception as e:
                     msg.code = 1
                     msg.info = e.args[0]
+        if mode == 'use-question':  # 批量启用/禁用试题
+            use = int(self.get_argument('use', '1'))
+            _id = eval(self.get_argument('id', '[]'))
+            id_str = '\'' + ','.join(_id).replace(',', '\',\'') + '\''
+            try:
+                self.application.db.execute('''
+                    update multi_choice set use=? where id in ({})
+                '''.format(id_str), (use, ))
+                self.application.db.commit()
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
         self.write(json.dumps(msg.json()))

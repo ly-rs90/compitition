@@ -45,6 +45,7 @@ let addShort = function (content, ans) {
       webix.alert(res.info);
     }
     else {
+      getShortCount(shortContent);
       webix.alert('添加成功！');
     }
   });
@@ -56,6 +57,7 @@ let delShort = function (id) {
       webix.alert(res.info);
     }
     else {
+      getShortCount(shortContent);
       webix.alert('删除成功！');
     }
   });
@@ -67,6 +69,7 @@ let modifyShort = function (id, content, ans) {
       webix.alert(res.info);
     }
     else {
+      getShortCount(shortContent);
       webix.alert('修改成功！');
     }
   });
@@ -128,6 +131,74 @@ export default class ShortManager extends JetView {
                     }).show();
                   }
                 },
+                {
+                  view: 'button', label: '批量启用', width: 90,
+                  click: function () {
+                    let contentId = [];
+                    let tb = $$('short:tb');
+                    let count = tb.count();
+                    for (let i = 0; i < count; i++) {
+                      let id = tb.getIdByIndex(i);
+                      if (tb.getItem(id).sel === '1') {
+                        contentId.push(id);
+                      }
+                    }
+                    post('/shortans', {mode: 'use-question', use: 1, id: contentId}).then(function (r) {
+                      let res = r.json();
+                      if (res.code !== 0) {
+                        webix.alert(res.info);
+                      }
+                      else {
+                        getShortCount(shortContent);
+                        webix.alert('启用成功!');
+                      }
+                    });
+                  }
+                },
+                {
+                  view: 'button', label: '批量禁用', width: 90,
+                  click: function () {
+                    let contentId = [];
+                    let tb = $$('short:tb');
+                    let count = tb.count();
+                    for (let i = 0; i < count; i++) {
+                      let id = tb.getIdByIndex(i);
+                      if (tb.getItem(id).sel === '1') {
+                        contentId.push(id);
+                      }
+                    }
+                    post('/shortans', {mode: 'use-question', use: 0, id: contentId}).then(function (r) {
+                      let res = r.json();
+                      if (res.code !== 0) {
+                        webix.alert(res.info);
+                      }
+                      else {
+                        getShortCount(shortContent);
+                        webix.alert('禁用成功!');
+                      }
+                    });
+                  }
+                },
+                {
+                  view: 'button', label: '批量删除', width: 90,
+                  click: function () {
+                    webix.confirm({text: '是否删除选中试题？', title: '删除确认', ok: '确定', cancel: '取消',
+                      callback: function (r) {
+                        if (r) {
+                          let contentId = [];
+                          let tb = $$('short:tb');
+                          let count = tb.count();
+                          for (let i = 0; i < count; i++) {
+                            let id = tb.getIdByIndex(i);
+                            if (tb.getItem(id).sel === '1') {
+                              contentId.push(id);
+                            }
+                          }
+                          delShort(contentId);
+                        }
+                      }});
+                  }
+                },
                 {}
               ]
             },
@@ -146,8 +217,15 @@ export default class ShortManager extends JetView {
         {
           view: 'datatable', scroll: 'y', id: 'short:tb', css: 'table',
           columns: [
+            {id: 'sel', header: '', template: '{common.checkbox()}', checkValue: '1', uncheckValue: '0', width: 40},
             {id: 'index', header: '#', adjust: 1},
             {id: 'content', header: '题目', fillspace: 1},
+            {
+              id: 'use', header: '是否启用', width: 90,
+              template: function (obj) {
+                return obj.use === 1?'启用':'禁用';
+              }
+            },
             {id: 'del', header: '', template: '<span class="fas fa-trash-alt"></span>', width: 50}
           ],
           scheme:{
@@ -158,14 +236,14 @@ export default class ShortManager extends JetView {
               webix.confirm({text: '是否删除该题？', title: '删除确认', ok: '确定', cancel: '取消',
                 callback: function (r) {
                   if (r) {
-                    delShort(id.row);
+                    delShort([id.row]);
                   }
                 }});
             }
           },
           on: {
             onItemClick: function (id) {
-              if (id.column === 'del') return;
+              if (id.column === 'del' || id.column === 'sel') return;
               let item = this.getItem(id);
               webix.ui({
                 view:"window",

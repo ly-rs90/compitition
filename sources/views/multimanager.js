@@ -45,6 +45,7 @@ let addMulti = function (content, c1, c2, c3, c4, ans) {
       webix.alert(res.info);
     }
     else {
+      getMultiCount(multiContent);
       webix.alert('添加成功！');
     }
   });
@@ -56,6 +57,7 @@ let delMulti = function (id) {
       webix.alert(res.info);
     }
     else {
+      getMultiCount(multiContent);
       webix.alert('删除成功！');
     }
   });
@@ -67,6 +69,7 @@ let modifyMulti = function (id, content, c1, c2, c3, c4, ans) {
       webix.alert(res.info);
     }
     else {
+      getMultiCount(multiContent);
       webix.alert('修改成功！');
     }
   });
@@ -155,6 +158,74 @@ export default class MultiManager extends JetView {
                     }).show();
                   }
                 },
+                {
+                  view: 'button', label: '批量启用', width: 90,
+                  click: function () {
+                    let contentId = [];
+                    let tb = $$('multi:tb');
+                    let count = tb.count();
+                    for (let i = 0; i < count; i++) {
+                      let id = tb.getIdByIndex(i);
+                      if (tb.getItem(id).sel === '1') {
+                        contentId.push(id);
+                      }
+                    }
+                    post('/multichoice', {mode: 'use-question', use: 1, id: contentId}).then(function (r) {
+                      let res = r.json();
+                      if (res.code !== 0) {
+                        webix.alert(res.info);
+                      }
+                      else {
+                        getMultiCount(multiContent);
+                        webix.alert('启用成功!');
+                      }
+                    });
+                  }
+                },
+                {
+                  view: 'button', label: '批量禁用', width: 90,
+                  click: function () {
+                    let contentId = [];
+                    let tb = $$('multi:tb');
+                    let count = tb.count();
+                    for (let i = 0; i < count; i++) {
+                      let id = tb.getIdByIndex(i);
+                      if (tb.getItem(id).sel === '1') {
+                        contentId.push(id);
+                      }
+                    }
+                    post('/multichoice', {mode: 'use-question', use: 0, id: contentId}).then(function (r) {
+                      let res = r.json();
+                      if (res.code !== 0) {
+                        webix.alert(res.info);
+                      }
+                      else {
+                        getMultiCount(multiContent);
+                        webix.alert('禁用成功!');
+                      }
+                    });
+                  }
+                },
+                {
+                  view: 'button', label: '批量删除', width: 90,
+                  click: function () {
+                    webix.confirm({text: '是否删除选中试题？', title: '删除确认', ok: '确定', cancel: '取消',
+                      callback: function (r) {
+                        if (r) {
+                          let contentId = [];
+                          let tb = $$('multi:tb');
+                          let count = tb.count();
+                          for (let i = 0; i < count; i++) {
+                            let id = tb.getIdByIndex(i);
+                            if (tb.getItem(id).sel === '1') {
+                              contentId.push(id);
+                            }
+                          }
+                          delMulti(contentId);
+                        }
+                      }});
+                  }
+                },
                 {}
               ]
             },
@@ -173,8 +244,15 @@ export default class MultiManager extends JetView {
         {
           view: 'datatable', scroll: 'y', id: 'multi:tb', css: 'table',
           columns: [
+            {id: 'sel', header: '', template: '{common.checkbox()}', checkValue: '1', uncheckValue: '0', width: 40},
             {id: 'index', header: '#', adjust: 1},
             {id: 'content', header: '题目', fillspace: 1},
+            {
+              id: 'use', header: '是否启用', width: 90,
+              template: function (obj) {
+                return obj.use === 1?'启用':'禁用';
+              }
+            },
             {id: 'del', header: '', template: '<span class="fas fa-trash-alt"></span>', width: 50}
           ],
           scheme:{
@@ -185,14 +263,14 @@ export default class MultiManager extends JetView {
               webix.confirm({text: '是否删除该题？', title: '删除确认', ok: '确定', cancel: '取消',
                 callback: function (r) {
                   if (r) {
-                    delMulti(id.row);
+                    delMulti([id.row]);
                   }
                 }});
             }
           },
           on: {
             onItemClick: function (id) {
-              if (id.column === 'del') return;
+              if (id.column === 'del' || id.column === 'sel') return;
               let item = this.getItem(id);
               webix.ui({
                 view:"window",
@@ -253,7 +331,7 @@ export default class MultiManager extends JetView {
                             let c3 = $$('ans:c').getValue();
                             let c4 = $$('ans:d').getValue();
                             let ans = $$('ans1').getValue() + $$('ans2').getValue() +
-                            $$('ans3').getValue() + $$('ans4').getValue();
+                              $$('ans3').getValue() + $$('ans4').getValue();
                             modifyMulti(id.row, content, c1, c2, c3, c4, ans);
                             $$('win1').close();
                           }

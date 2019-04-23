@@ -19,8 +19,10 @@ class Judge(RequestHandler):
         count = self.get_argument('count', 0)
         start = self.get_argument('start', 0)
         try:
-            total_count = self.application.db.execute('''select count(*) from judge''').fetchone()[0]
-            r = self.application.db.execute('''select id, content from judge limit ? offset ?''', (count, start)).fetchall()
+            total_count = self.application.db.execute('''select count(*) from judge where use=1''').fetchone()[0]
+            r = self.application.db.execute('''
+                select id, content from judge where use = 1 limit ? offset ?
+            ''', (count, start)).fetchall()
             data = []
             for n in r:
                 data.append({'id': n[0], 'content': n[1]})
@@ -96,13 +98,14 @@ class Judge(RequestHandler):
             msg.data = []
             try:
                 r = self.application.db.execute('''
-                    select id, content, ans from judge where content like '%{}%' limit 30 offset ?
+                    select id, content, ans, use from judge where content like '%{}%' limit 30 offset ?
                 '''.format(content), (page*30, )).fetchall()
                 for n in r:
                     msg.data.append({
                         'id': n[0],
                         'content': n[1],
-                        'ans': n[2]
+                        'ans': n[2],
+                        'use': n[3]
                     })
             except Exception as e:
                 msg.code = 1
@@ -123,11 +126,12 @@ class Judge(RequestHandler):
                     msg.code = 1
                     msg.info = e.args[0]
         if mode == 'del':
-            _id = self.get_argument('id', '')
+            _id = eval(self.get_argument('id', '[]'))
+            id_str = '\'' + ','.join(_id).replace(',', '\',\'') + '\''
             try:
                 self.application.db.execute('''
-                    delete from judge where id=?
-                ''', (_id, ))
+                    delete from judge where id in ({})
+                '''.format(id_str))
                 self.application.db.commit()
             except Exception as e:
                 msg.code = 1
@@ -148,4 +152,16 @@ class Judge(RequestHandler):
                 except Exception as e:
                     msg.code = 1
                     msg.info = e.args[0]
+        if mode == 'use-question':  # 批量启用/禁用试题
+            use = int(self.get_argument('use', '1'))
+            _id = eval(self.get_argument('id', '[]'))
+            id_str = '\'' + ','.join(_id).replace(',', '\',\'') + '\''
+            try:
+                self.application.db.execute('''
+                    update judge set use=? where id in ({})
+                '''.format(id_str), (use, ))
+                self.application.db.commit()
+            except Exception as e:
+                msg.code = 1
+                msg.info = e.args[0]
         self.write(json.dumps(msg.json()))

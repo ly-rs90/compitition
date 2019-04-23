@@ -91,7 +91,14 @@ class ExamResult(RequestHandler):
                             values (?, ?, ?, ?, ?, ?, ?, ?)
                         ''', (user, paper_id, judge, choice, multi, short, total, pass_))
                     except:
-                        pass
+                        try:
+                            self.application.db.execute('''
+                                update exam_score set judge_score=?, choice_score=?, multi_score=?, short_score=?, total_score=?, pass=?
+                                where user_id=? and paper_id=?
+                            ''', (judge, choice, multi, short, total, pass_, user, paper_id))
+                            self.application.db.commit()
+                        except:
+                            pass
                 self.application.db.commit()
             except Exception as e:
                 msg.code = 1
