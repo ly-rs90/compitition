@@ -81,7 +81,7 @@ export default class PaperPublish extends JetView {
           cols: [
             {width: 20},
             {
-              view: 'counter', label: '判断题分值：', labelWidth: 100, min: 1, max: 100, step: 1,
+              view: 'counter', label: '判断题分值：', labelWidth: 120, min: 1, max: 100, step: 1,
               value: 1, id: 'judge:score',
               on: {
                 onChange: function () {
@@ -90,7 +90,7 @@ export default class PaperPublish extends JetView {
               }
             },
             {
-              view: 'counter', label: '单选题分值：', labelWidth: 100, min: 1, max: 100, step: 1,
+              view: 'counter', label: '单选题分值：', labelWidth: 120, min: 1, max: 100, step: 1,
               value: 2, id: 'choice:score',
               on: {
                 onChange: function () {
@@ -99,7 +99,7 @@ export default class PaperPublish extends JetView {
               }
             },
             {
-              view: 'counter', label: '多选题分值：', labelWidth: 100, min: 1, max: 100, step: 1,
+              view: 'counter', label: '多选题分值：', labelWidth: 120, min: 1, max: 100, step: 1,
               value: 3, id: 'multiChoice:score',
               on: {
                 onChange: function () {
@@ -108,7 +108,7 @@ export default class PaperPublish extends JetView {
               }
             },
             {
-              view: 'counter', label: '简答题分值：', labelWidth: 100, min: 1, max: 100, step: 1,
+              view: 'counter', label: '简答题分值：', labelWidth: 120, min: 1, max: 100, step: 1,
               value: 10, id: 'shortAns:score',
               on: {
                 onChange: function () {
@@ -121,7 +121,8 @@ export default class PaperPublish extends JetView {
         {
           cols: [
             {width: 20},
-            {view: 'counter', label: '及格分数线：', labelWidth: 100, min: 0, max: 100, step: 1, value: 95, id: 'pass:score'},
+            {view: 'counter', label: '及格分数线：', labelWidth: 120, min: 0, max: 100, step: 1, value: 95, id: 'pass:score'},
+            {view: 'counter', label: '考试时长(min)：', labelWidth: 120, min: 1, max: 180, step: 10, value: 90, id: 'exam:duration'},
             {
               cols: [
                 {
@@ -165,8 +166,9 @@ export default class PaperPublish extends JetView {
                                   let totalScore = judgeValue*judge.length + choiceValue*choice.length + multiValue*multiChoice.length
                                     + shortValue*shortAns.length;
                                   let name = $$('paper:name').getValue();
+                                  let duration = $$('exam:duration').getValue();
                                   let param = {
-                                    name: name,
+                                    name: name, duration: duration,
                                     judge: judge, judgeValue: judgeValue,
                                     choice: choice, choiceValue: choiceValue,
                                     multiChoice: multiChoice, multiValue: multiValue,
@@ -329,7 +331,6 @@ export default class PaperPublish extends JetView {
                 {}
               ]
             },
-            {},
             {view: 'label', label: '总分：0', id: 'total:score'}
           ]
         },

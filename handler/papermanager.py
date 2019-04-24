@@ -19,7 +19,7 @@ class PaperManager(RequestHandler):
         msg.data = []
         try:
             r = self.application.db.execute('''
-                select name, create_time, begin_time, end_time, total_value, pass_score, active from paper_info
+                select name, create_time, begin_time, end_time, total_value, pass_score, active, duration from paper_info
             ''').fetchall()
             for n in r:
                 msg.data.append({
@@ -29,7 +29,8 @@ class PaperManager(RequestHandler):
                     'eTime': time.strftime('%Y/%m/%d %X', time.localtime(n[3])),
                     'total': n[4],
                     'pass': n[5],
-                    'active': n[6]
+                    'active': n[6],
+                    'duration': n[7]
                 })
         except Exception as e:
             pass
@@ -60,10 +61,11 @@ class PaperManager(RequestHandler):
             e_time = self.get_argument('eTime', 0)
             pas = self.get_argument('pass', 0)
             active = self.get_argument('active', 0)
+            duration = int(self.get_argument('duration', '90'))
             try:
                 self.application.db.execute('''
-                    update paper_info set begin_time=?,end_time=?,pass_score=?,active=? where name=?
-                ''', (b_time, e_time, pas, active, name))
+                    update paper_info set begin_time=?,end_time=?,pass_score=?,active=?, duration=? where name=?
+                ''', (b_time, e_time, pas, active, duration, name))
                 self.application.db.commit()
             except Exception as e:
                 msg.code = 1

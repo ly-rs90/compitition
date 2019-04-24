@@ -22,10 +22,10 @@ class Paper(RequestHandler):
         if paper_id:
             try:
                 r = self.application.db.execute('''
-                    select begin_time, end_time from paper_info where table_name=?
+                    select begin_time, end_time, duration from paper_info where table_name=?
                 ''', (paper_id, )).fetchone()
                 if r and r[0] <= now <= r[1]:
-                    msg.data = {'judge': [], 'choice': [], 'multi': [], 'short': [], 'time': ''}
+                    msg.data = {'judge': [], 'choice': [], 'multi': [], 'short': [], 'time': '', 'duration': r[2]}
                     judge = []
                     choice = []
                     multi_choice = []

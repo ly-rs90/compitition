@@ -19,7 +19,7 @@ export default class PaperManager extends JetView {
             {
               cols: [
                 {
-                  view: 'text', label: '试卷名称', labelWidth: 80, width: 300, readonly: 1, id: 'paper:name',
+                  view: 'text', label: '试卷名称', labelWidth: 70, width: 290, readonly: 1, id: 'paper:name',
                   name: 'name',
                   on: {
                     onChange: function (v) {
@@ -37,12 +37,12 @@ export default class PaperManager extends JetView {
                 {width: 10},
                 {
                   view: 'datepicker', name: 'cTime', label: '创建时间', timepicker: 1, format: '%Y/%m/%d %H:%i',
-                  labelWidth: 80, width: 300, readonly: 1
+                  labelWidth: 70, width: 290, readonly: 1
                 },
                 {width: 10},
                 {
                   view: 'datepicker', name: 'bTime', label: '开考时间', timepicker: 1, format: '%Y/%m/%d %H:%i',
-                  labelWidth: 80, width: 300
+                  labelWidth: 70, width: 290
                 },
                 {}
               ]
@@ -51,13 +51,15 @@ export default class PaperManager extends JetView {
               cols: [
                 {
                   view: 'datepicker', name: 'eTime', label: '结束时间', timepicker: 1, format: '%Y/%m/%d %H:%i',
-                  labelWidth: 80, width: 300
+                  labelWidth: 70, width: 290
                 },
                 {width: 10},
-                {view: 'text', label: '及格分数', labelWidth: 80, width: 300, name: 'pass'},
-                {width: 10},
+                {view: 'text', label: '及格分数', labelWidth: 70, width: 130, name: 'pass'},
+                {width: 20},
+                {view: 'text', label: '考试时长', labelWidth: 70, width: 130, name: 'duration'},
+                {width: 20},
                 {
-                  view: 'checkbox', label: '是否启用', labelWidth: 80, width: 120, name: 'active'
+                  view: 'checkbox', label: '是否启用', labelWidth: 70, width: 110, name: 'active'
                 },
                 {width: 10},
                 {
@@ -68,13 +70,15 @@ export default class PaperManager extends JetView {
                       webix.alert('请检查无效数据！');
                     }
                     else {
-                      let name = $$('form:info').getValues().name;
-                      let bTime = $$('form:info').getValues().bTime.getTime()/1000;
-                      let eTime = $$('form:info').getValues().eTime.getTime()/1000;
-                      let pass = $$('form:info').getValues().pass;
-                      let active = $$('form:info').getValues().active;
+                      let values = $$('form:info').getValues();
+                      let name = values.name;
+                      let bTime = values.bTime.getTime()/1000;
+                      let eTime = values.eTime.getTime()/1000;
+                      let pass = values.pass;
+                      let active = values.active;
+                      let duration = values.duration;
                       post('/papermanager', {type: 'update', name: name, bTime: bTime,
-                        eTime: eTime, pass: pass, active: active}).then(function (r) {
+                        eTime: eTime, pass: pass, active: active, duration: duration}).then(function (r) {
                           let res = r.json();
                           if (res.code === 0) {
                             $$('paper:table').clearAll();
@@ -128,7 +132,13 @@ export default class PaperManager extends JetView {
             {id: 'eTime', header: '结束时间', fillspace: 1},
             {id: 'total', header: '总分', adjust: 1},
             {id: 'pass', header: '及格分数', adjust: 1},
-            {id: 'active', header: '是否启用', adjust: 1}
+            {id: 'duration', header: '考试时长(min)', adjust: 1},
+            {
+              id: 'active', header: '是否启用', adjust: 1,
+              template: function (obj) {
+                return obj.active === 1?'是':'否';
+              }
+            }
           ],
           scheme:{
             $init:function(obj){ obj.index = this.count(); }

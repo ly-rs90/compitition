@@ -245,7 +245,7 @@ export default class Exam extends JetView {
 
                       // 显示考试时间
                       let setTime = function() {
-                        let timeLeft = 90*60 + res.data.time - parseInt(new Date().getTime()/1000);
+                        let timeLeft = 60*res.data.duration + res.data.time - parseInt(new Date().getTime()/1000);
                         let hourLeft = parseInt(timeLeft / 3600);
                         let minLeft = parseInt((timeLeft - hourLeft*3600) / 60);
                         let secLeft = parseInt(timeLeft - hourLeft*3600 - minLeft*60);

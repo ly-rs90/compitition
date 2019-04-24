@@ -28,6 +28,7 @@ class PaperPublish(RequestHandler):
         short_value = int(self.get_argument('shortValue', '0'))
         pass_score = int(self.get_argument('passScore', '0'))
         total_score = int(self.get_argument('totalScore', '0'))
+        duration = int(self.get_argument('duration', '90'))
 
         now = int(time.time())
         paper_id = uuid.uuid4().hex
@@ -42,8 +43,8 @@ class PaperPublish(RequestHandler):
         try:
             self.application.db.execute('''
                     insert into paper_info (name, table_name, create_time, begin_time, end_time, judge_value, choice_value, 
-                    multi_value, short_value, total_value, pass_score) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ''', (name, 'paper_{}'.format(paper_id), now, now, now + 7200, judge_value, choice_value, multi_value, short_value, total_score, pass_score))
+                    multi_value, short_value, total_value, pass_score, duration) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (name, 'paper_{}'.format(paper_id), now, now, now + 7200, judge_value, choice_value, multi_value, short_value, total_score, pass_score, duration))
 
             param1 = ','.join(judge).replace(',', '\',\'')
             param1 = '\'' + param1 + '\''

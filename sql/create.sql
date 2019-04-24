@@ -18,6 +18,7 @@ create table if not exists paper_info (
   short_value integer check ( short_value > 0 and multi_value <= 100 ),   -- 简答题分值
   total_value integer check ( total_value > 0 ),   -- 试卷总分值
   pass_score integer check ( pass_score >= 0 ),   -- 及格分数线
+  duration integer default 90 check ( duration > 0 and duration <= 180 ),   -- 考试时长
   active integer default 0 check ( active in (0, 1) )   -- 是否启用试卷
 );
 -- 判断题
