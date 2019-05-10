@@ -14,9 +14,10 @@ import xlrd
 
 con = sqlite3.connect('../data.db')
 
-wb = xlrd.open_workbook('F:/aa/a.xls')
+wb = xlrd.open_workbook('F:/aa/o.xls')
 judge_sheet = wb.sheet_by_index(1)
 total_rows = judge_sheet.nrows
+scu_num = 0
 
 for n in range(1, total_rows):
     row = judge_sheet.row(n)
@@ -34,6 +35,8 @@ for n in range(1, total_rows):
     try:
         con.execute('''insert into multi_choice (id, content, c1, c2, c3, c4, ans) values (?, ?, ?, ?, ?, ?, ?)''',
                     (_id, content, c1, c2, c3, c4, ans))
+        scu_num += 1
     except Exception as e:
         print(e.args[0])
 con.commit()
+print('成功导入{}道试题'.format(scu_num))

@@ -81,9 +81,11 @@ export default class Exam extends JetView {
                           rows: [
                             {
                               css: 'white-bg question-panel',
+                              height: 150,
                               rows: [
                                 {template: '', css: 'question-tip'},
                                 {template: '判断', css: 'question-type'},
+                                {view: 'template', template: '', css: 'result-type', borderless: 1, id: item.id + '_judge', hidden: 1},
                                 {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, height: 100, css: 'question-content'},
                                 {
                                   cols: [
@@ -106,9 +108,11 @@ export default class Exam extends JetView {
                       res.data.multi.forEach(function (item) {
                         p.addView({
                           css: 'white-bg question-panel',
+                          height: 270,
                           rows: [
                             {template: '', css: 'question-tip'},
                             {template: '多选', css: 'question-type'},
+                            {view: 'template', template: '', css: 'result-type', borderless: 1, id: item.id + '_multi', hidden: 1},
                             {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
                             {
                               view: 'form', id: item.id, borderless: 1,
@@ -125,9 +129,11 @@ export default class Exam extends JetView {
                       res.data.choice.forEach(function (item) {
                         p.addView({
                           css: 'white-bg question-panel',
+                          height: 220,
                           rows: [
                             {template: '', css: 'question-tip'},
                             {template: '单选', css: 'question-type'},
+                            {view: 'template', template: '', css: 'result-type', borderless: 1, id: item.id + '_choice', hidden: 1},
                             {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
                             {
                               cols: [
@@ -150,6 +156,7 @@ export default class Exam extends JetView {
                       res.data.short.forEach(function (item) {
                         p.addView({
                           css: 'white-bg question-panel',
+                          height: 310,
                           rows: [
                             {template: '', css: 'question-tip'},
                             {template: '简答', css: 'question-type'},
@@ -208,13 +215,54 @@ export default class Exam extends JetView {
                                   judge: judgeResult, choice: choiceResult,
                                   multi: multiResult, short: shortResult
                                 }).then(function (r1) {
-                                  let res = r1.json();
-                                  if (res.code === 0) {
+                                  let res1 = r1.json();
+                                  if (res1.code === 0) {
+                                    res.data.judge.forEach(function (item) {
+                                      let ans = $$(item.id).getValue();
+                                      if (ans === item.ans.toString()) {
+                                        $$(item.id + '_judge').define('template', '<span class="fas fa-check"></span>');
+                                        $$(item.id + '_judge').refresh();
+                                        $$(item.id + '_judge').show();
+                                      }
+                                      else {
+                                        $$(item.id + '_judge').define('template', '<span class="fas fa-times"></span>');
+                                        $$(item.id + '_judge').refresh();
+                                        $$(item.id + '_judge').show();
+                                      }
+                                    });
+                                    res.data.choice.forEach(function (item) {
+                                      let ans = $$(item.id).getValue();
+                                      if (ans === item.ans) {
+                                        $$(item.id + '_choice').define('template', '<span class="fas fa-check"></span>');
+                                        $$(item.id + '_choice').refresh();
+                                        $$(item.id + '_choice').show();
+                                      }
+                                      else {
+                                        $$(item.id + '_choice').define('template', '<span class="fas fa-times"></span>');
+                                        $$(item.id + '_choice').refresh();
+                                        $$(item.id + '_choice').show();
+                                      }
+                                    });
+                                    res.data.multi.forEach(function (item) {
+                                      let ans = $$(item.id).getValues();
+                                      let ansStr = (ans.a===1?'1':'') + (ans.b===1?'2':'') + (ans.c===1?'3':'') + (ans.d===1?'4':'');
+                                      if (ansStr === item.ans) {
+                                        $$(item.id + '_multi').define('template', '<span class="fas fa-check"></span>');
+                                        $$(item.id + '_multi').refresh();
+                                        $$(item.id + '_multi').show();
+                                      }
+                                      else {
+                                        $$(item.id + '_multi').define('template', '<span class="fas fa-times"></span>');
+                                        $$(item.id + '_multi').refresh();
+                                        $$(item.id + '_multi').show();
+                                      }
+                                    });
+                                    res.data.duration = 0;
                                     webix.alert('提交成功！');
-                                    p.$scope.show('/login');
+                                    //p.$scope.show('/login');
                                   }
                                   else {
-                                    webix.alert('提交失败，原因：' + res.info);
+                                    webix.alert('提交失败，原因：' + res1.info);
                                   }
                                 });
                               };
@@ -258,6 +306,9 @@ export default class Exam extends JetView {
                         $$('exam:time').define('label', `倒计时：${timeLeftStr}`);
                         $$('exam:time').refresh();
                         $$('exam:time').show();
+                        if (timeLeftStr === '00:00:00') {
+                          clearInterval(timeInterval);
+                        }
                       };
                       setTime();
                       timeInterval = setInterval(function () {

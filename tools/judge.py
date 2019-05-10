@@ -17,6 +17,7 @@ con = sqlite3.connect('../data.db')
 wb = xlrd.open_workbook('F:/aa/a.xls')
 judge_sheet = wb.sheet_by_index(2)
 total_rows = judge_sheet.nrows
+scu_num = 0
 
 for n in range(1, total_rows):
     row = judge_sheet.row(n)
@@ -25,7 +26,9 @@ for n in range(1, total_rows):
     _id = uuid.uuid4().hex
     try:
         con.execute('''insert into judge (id, content, ans) values (?, ?, ?)''', (_id, content, ans))
+        scu_num += 1
     except Exception as e:
         print(e.args[0])
 con.commit()
+print('成功导入{}道试题！'.format(scu_num))
 

@@ -46,28 +46,28 @@ class Paper(RequestHandler):
                     param = ','.join(judge).replace(',', '\',\'')
                     param = '\'' + param + '\''
                     r = self.application.db.execute('''
-                        select id, content from judge where id in ({})
+                        select id, content, ans from judge where id in ({})
                     '''.format(param)).fetchall()
                     for n in r:
-                        msg.data['judge'].append({'id': n[0], 'content': n[1]})
+                        msg.data['judge'].append({'id': n[0], 'content': n[1], 'ans': n[2]})
 
                     param = ','.join(choice).replace(',', '\',\'')
                     param = '\'' + param + '\''
                     r = self.application.db.execute('''
-                        select id, content, c1, c2, c3, c4 from choice where id in ({})
+                        select id, content, c1, c2, c3, c4, ans from choice where id in ({})
                     '''.format(param)).fetchall()
                     for n in r:
                         msg.data['choice'].append({'id': n[0], 'content': n[1], 'c1': n[2],
-                                                   'c2': n[3], 'c3': n[4], 'c4': n[5]})
+                                                   'c2': n[3], 'c3': n[4], 'c4': n[5], 'ans': n[6]})
 
                     param = ','.join(multi_choice).replace(',', '\',\'')
                     param = '\'' + param + '\''
                     r = self.application.db.execute('''
-                        select id, content, c1, c2, c3, c4 from multi_choice where id in ({})
+                        select id, content, c1, c2, c3, c4, ans from multi_choice where id in ({})
                     '''.format(param)).fetchall()
                     for n in r:
                         msg.data['multi'].append({'id': n[0], 'content': n[1], 'c1': n[2],
-                                                  'c2': n[3], 'c3': n[4], 'c4': n[5]})
+                                                  'c2': n[3], 'c3': n[4], 'c4': n[5], 'ans': n[6]})
 
                     param = ','.join(short_ans).replace(',', '\',\'')
                     param = '\'' + param + '\''

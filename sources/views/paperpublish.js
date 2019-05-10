@@ -276,7 +276,7 @@ export default class PaperPublish extends JetView {
                               });
                               res.data.choice.forEach(function (item) {
                                 v.rows.push({
-                                  css: 'white-bg question-panel', height: 200,
+                                  css: 'white-bg question-panel', height: 220,
                                   rows: [
                                     {template: '', css: 'question-tip'},
                                     {template: '单选', css: 'question-type'},
