@@ -14,8 +14,8 @@ import xlrd
 
 con = sqlite3.connect('../data.db')
 
-wb = xlrd.open_workbook('F:/aa/o.xls')
-judge_sheet = wb.sheet_by_index(1)
+wb = xlrd.open_workbook('F:/aa/multi_and_short2019.xls')
+judge_sheet = wb.sheet_by_index(0)
 total_rows = judge_sheet.nrows
 scu_num = 0
 
