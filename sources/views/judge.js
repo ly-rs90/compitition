@@ -119,6 +119,8 @@ export default class Judge extends JetView {
     };
   }
   init(_$view, _$) {
+    $$('home:title').define('label', '<span style="color: #fff;font-size: 16px;">判断题练习</span>');
+    $$('home:title').refresh();
     post('/judge', {mode: 'get-num'}).then(function (r) {
       let res = r.json();
       if (res.code !== 0) {

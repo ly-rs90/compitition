@@ -7,6 +7,7 @@
 @Author: ly
 @Description: 
 """
+import random
 import json
 import time
 from tornado.web import RequestHandler
@@ -50,6 +51,10 @@ class Paper(RequestHandler):
                     '''.format(param)).fetchall()
                     for n in r:
                         msg.data['judge'].append({'id': n[0], 'content': n[1], 'ans': n[2]})
+                    for _ in range(len(r)//2):
+                        num1 = random.randint(0, len(r) - 1)
+                        num2 = random.randint(0, len(r) - 1)
+                        msg.data['judge'][num1], msg.data['judge'][num2] = msg.data['judge'][num2], msg.data['judge'][num1]
 
                     param = ','.join(choice).replace(',', '\',\'')
                     param = '\'' + param + '\''
@@ -59,6 +64,10 @@ class Paper(RequestHandler):
                     for n in r:
                         msg.data['choice'].append({'id': n[0], 'content': n[1], 'c1': n[2],
                                                    'c2': n[3], 'c3': n[4], 'c4': n[5], 'ans': n[6]})
+                    for _ in range(len(r)//2):
+                        num1 = random.randint(0, len(r) - 1)
+                        num2 = random.randint(0, len(r) - 1)
+                        msg.data['choice'][num1], msg.data['choice'][num2] = msg.data['choice'][num2], msg.data['choice'][num1]
 
                     param = ','.join(multi_choice).replace(',', '\',\'')
                     param = '\'' + param + '\''
@@ -68,14 +77,22 @@ class Paper(RequestHandler):
                     for n in r:
                         msg.data['multi'].append({'id': n[0], 'content': n[1], 'c1': n[2],
                                                   'c2': n[3], 'c3': n[4], 'c4': n[5], 'ans': n[6]})
+                    for _ in range(len(r)//2):
+                        num1 = random.randint(0, len(r) - 1)
+                        num2 = random.randint(0, len(r) - 1)
+                        msg.data['multi'][num1], msg.data['multi'][num2] = msg.data['multi'][num2], msg.data['multi'][num1]
 
                     param = ','.join(short_ans).replace(',', '\',\'')
                     param = '\'' + param + '\''
                     r = self.application.db.execute('''
-                        select id, content from short_answer where id in ({})
+                        select id, content, ans from short_answer where id in ({})
                     '''.format(param)).fetchall()
                     for n in r:
-                        msg.data['short'].append({'id': n[0], 'content': n[1]})
+                        msg.data['short'].append({'id': n[0], 'content': n[1], 'ans': n[2]})
+                    for _ in range(len(r)//2):
+                        num1 = random.randint(0, len(r) - 1)
+                        num2 = random.randint(0, len(r) - 1)
+                        msg.data['short'][num1], msg.data['short'][num2] = msg.data['short'][num2], msg.data['short'][num1]
 
                     user = self.get_secure_cookie('userID').decode()
                     time_start = int(self.get_argument('time'))

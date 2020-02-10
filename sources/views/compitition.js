@@ -38,7 +38,8 @@ export default class Compitition extends JetView {
                 },
               ]
             },
-            {},
+            {view: 'label', label: '', align: 'center', id: 'home:title'},
+            {width: 30},
             {view: 'label', label: '倒计时：01:30:23', width: 130, css: 'label', id: 'exam:time', hidden: 1},
             {view: 'label', label: '您好，XX用户！', align: 'center', css: 'label', width: 200, id: 'hello:user', hidden: 1}
           ]

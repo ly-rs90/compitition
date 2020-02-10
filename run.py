@@ -21,6 +21,7 @@ from handler.simulate import Simulate
 from handler.examresult import ExamResult
 from handler.user import User
 from handler.paperview import PaperView
+from handler.errorbook import ErrorBook
 
 from tornado.options import define, options
 define("port", default=80, help="run on the given port", type=int)
@@ -39,6 +40,7 @@ class Application(tornado.web.Application):
     def __init__(self):
         self.db = sqlite3.connect('data.db')
         handlers = [
+            (r'/errorbook', ErrorBook),
             (r'/register', Register),
             (r'/paperview', PaperView),
             (r'/user', User),

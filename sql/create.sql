@@ -99,3 +99,11 @@ create table if not exists exam_score (
     foreign key (user_id) references user(id) on delete cascade,
     primary key (user_id, paper_id)
 );
+-- 错题集
+create table if not exists error_book (
+    question_id text not null,
+    question_type integer not null check ( question_type in (0, 1, 2, 3) ),
+    user_id text not null,
+    foreign key (user_id) references user(id) on delete cascade,
+    primary key (question_id, user_id)
+);

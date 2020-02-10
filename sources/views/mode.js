@@ -47,4 +47,8 @@ export default class Mode extends JetView {
       ]
     };
   }
+  init(_$view, _$) {
+    $$('home:title').define('label', '<span style="color: #fff;font-size: 16px;"></span>');
+    $$('home:title').refresh();
+  }
 }

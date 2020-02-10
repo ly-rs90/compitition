@@ -167,3 +167,19 @@
 .table .webix_cell {
     text-overflow: ellipsis;
 }
+.done button {
+    background: #8eea8e !important;
+}
+.question-ans {
+    width: 110px !important;
+    height: 30px !important;
+    background: transparent;
+    color: red;
+    border: 1px solid red !important;
+    position: absolute;
+    top: 40px;
+    right: 60px;
+    line-height: 24px;
+    text-align: center;
+    transform: rotate(30deg);
+}

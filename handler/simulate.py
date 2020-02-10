@@ -13,6 +13,7 @@ import time
 from tornado.web import RequestHandler
 from .msg import Msg
 from .util import similar_simple
+from .adderrorquestion import add_error_question
 
 
 class Simulate(RequestHandler):
@@ -77,4 +78,11 @@ class Simulate(RequestHandler):
             except Exception as e:
                 msg.code = 1
                 msg.info = e.args[0]
+        # 添加错题
+        if _type == 'add-error-question':
+            question_id = self.get_argument('question_id', None)
+            question_type = self.get_argument('question_type', None)
+            user_id = self.get_secure_cookie('userID').decode()
+            if question_id and question_type is not None:
+                add_error_question(self.application.db, question_id, question_type, user_id)
         self.write(json.dumps(msg.json()))

@@ -165,6 +165,8 @@ export default class MultiChoice extends JetView {
     };
   }
   init(_$view, _$) {
+    $$('home:title').define('label', '<span style="color: #fff;font-size: 16px;">多选题练习</span>');
+    $$('home:title').refresh();
     post('/multichoice', {mode: 'get-num'}).then(function (r) {
       let res = r.json();
       if (res.code !== 0) {

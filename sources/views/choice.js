@@ -147,6 +147,8 @@ export default class Choice extends JetView {
     };
   }
   init(_$view, _$) {
+    $$('home:title').define('label', '<span style="color: #fff;font-size: 16px;">单选题练习</span>');
+    $$('home:title').refresh();
     post('/choice', {mode: 'get-num'}).then(function (r) {
       let res = r.json();
       if (res.code !== 0) {
