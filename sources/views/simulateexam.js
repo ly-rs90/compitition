@@ -68,10 +68,11 @@ export default class SimulateExam extends JetView {
           });
         }
         questionNum.addView({height: 5});
-        p.addView({height: 5});
+        let papers = {type: 'wide', rows: []};
+        papers.rows.push({height: 5});
         res.data.judge.forEach(function (item) {
           let num = index;
-          p.addView({
+          papers.rows.push({
             id: index + '_panel',
             rows: [
               {
@@ -104,12 +105,11 @@ export default class SimulateExam extends JetView {
                   {template: `答案：${['错', '对'][item.ans]}`, css: 'question-ans', hidden: 1, id: `ans${num}`}
                 ]
               }
-            ]
-          });
+            ]});
         });
         res.data.multi.forEach(function (item) {
           let num = index;
-          p.addView({
+          papers.rows.push({
             css: 'white-bg question-panel', id: index + '_panel',
             rows: [
               {template: '', css: 'question-tip'},
@@ -145,7 +145,7 @@ export default class SimulateExam extends JetView {
         });
         res.data.choice.forEach(function (item) {
           let num = index;
-          p.addView({
+          papers.rows.push({
             css: 'white-bg question-panel', id: index + '_panel',
             rows: [
               {template: '', css: 'question-tip'},
@@ -179,7 +179,7 @@ export default class SimulateExam extends JetView {
         });
         res.data.short.forEach(function (item) {
           let num = index;
-          p.addView({
+          papers.rows.push({
             css: 'white-bg question-panel', id: index + '_panel',
             rows: [
               {template: '', css: 'question-tip'},
@@ -223,6 +223,7 @@ export default class SimulateExam extends JetView {
             ]
           });
         });
+        p.addView(papers);
         p.addView({
           cols: [
             {},

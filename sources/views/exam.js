@@ -107,9 +107,10 @@ export default class Exam extends JetView {
                       let c = p.getChildViews()[0];
                       p.removeView(c);
                       p.addView({height: 5});
+                      let papers = {type: 'wide', rows: []};
                       res.data.judge.forEach(function (item) {
                         let num = index;
-                        p.addView({
+                        papers.rows.push({
                           id: index + '_panel',
                           rows: [
                             {
@@ -144,17 +145,31 @@ export default class Exam extends JetView {
                             }
                           ]
                         });
+
                       });
                       res.data.multi.forEach(function (item) {
                         let num = index;
-                        p.addView({
+                        papers.rows.push({
                           css: 'white-bg question-panel', id: index + '_panel',
                           height: 270,
                           rows: [
                             {template: '', css: 'question-tip'},
                             {template: '多选', css: 'question-type'},
-                            {view: 'template', template: '', css: 'result-type', borderless: 1, id: item.id + '_multi', hidden: 1},
-                            {view: 'template', template: `第${index++}题：` + item.content, borderless: 1, autoheight: 1, css: 'question-content'},
+                            {
+                              view: 'template',
+                              template: '',
+                              css: 'result-type',
+                              borderless: 1,
+                              id: item.id + '_multi',
+                              hidden: 1
+                            },
+                            {
+                              view: 'template',
+                              template: `第${index++}题：` + item.content,
+                              borderless: 1,
+                              autoheight: 1,
+                              css: 'question-content'
+                            },
                             {
                               view: 'form', id: item.id, borderless: 1,
                               elements: [
@@ -169,22 +184,25 @@ export default class Exam extends JetView {
                                   if (values.a || values.b || values.c || values.d) {
                                     webix.html.removeCss($$('btn:num' + num).getNode(), 'done');
                                     webix.html.addCss($$('btn:num' + num).getNode(), 'done');
-                                  }else {
+                                  } else {
                                     webix.html.removeCss($$('btn:num' + num).getNode(), 'done');
                                   }
                                 }
                               }
                             },
                             {
-                              hidden: 1, id: `ans${num}`,
-                              template: `答案：${item.ans.replace('1', 'A').replace('2', 'B').replace('3', 'C').replace('4', 'D')}`, css: 'question-ans'
+                              hidden: 1,
+                              id: `ans${num}`,
+                              template: `答案：${item.ans.replace('1', 'A').replace('2', 'B').replace('3', 'C').replace('4', 'D')}`,
+                              css: 'question-ans'
                             }
                           ]
                         });
                       });
+
                       res.data.choice.forEach(function (item) {
                         let num = index;
-                        p.addView({
+                        papers.rows.push({
                           css: 'white-bg question-panel', id: index + '_panel',
                           height: 220,
                           rows: [
@@ -216,10 +234,11 @@ export default class Exam extends JetView {
                             {template: `答案：${['A', 'B', 'C', 'D'][item.ans - 1]}`, css: 'question-ans', hidden: 1, id: `ans${num}`}
                           ]
                         });
+
                       });
                       res.data.short.forEach(function (item) {
                         let num = index;
-                        p.addView({
+                        papers.rows.push({
                           css: 'white-bg question-panel', id: index + '_panel',
                           rows: [
                             {template: '', css: 'question-tip'},
@@ -262,8 +281,9 @@ export default class Exam extends JetView {
                             }
                           ]
                         });
+
                       });
-                      p.addView({
+                      papers.rows.push({
                         cols: [
                           {},
                           {
@@ -392,7 +412,9 @@ export default class Exam extends JetView {
                           {}
                         ]
                       });
-                      p.addView({height: 5});
+
+                      papers.rows.push({height: 5});
+                      p.addView(papers);
 
                       // 显示考试时间
                       let setTime = function() {

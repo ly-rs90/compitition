@@ -61,10 +61,11 @@ export default class ErrorBook extends JetView {
       }
       questionNum.addView({height: 5});
       let index = 1;
-      paper.addView({height: 5});
+      let papers = {type: 'wide', rows: []};
+      papers.rows.push({height: 5});
       // 添加判断题
       result.data['judge'].forEach(function (item) {
-        paper.addView({
+        papers.rows.push({
           id: index + '_panel',
           rows: [
             {
@@ -112,7 +113,7 @@ export default class ErrorBook extends JetView {
       });
       // 添加多选题
       result.data['multi_choice'].forEach(function (item) {
-        paper.addView({
+        papers.rows.push({
           css: 'white-bg question-panel', id: index + '_panel',
           rows: [
             {template: '', css: 'question-tip'},
@@ -160,7 +161,7 @@ export default class ErrorBook extends JetView {
       });
       // 添加单选题
       result.data['choice'].forEach(function (item) {
-        paper.addView({
+        papers.rows.push({
           css: 'white-bg question-panel', id: index + '_panel',
           rows: [
             {template: '', css: 'question-tip'},
@@ -201,7 +202,8 @@ export default class ErrorBook extends JetView {
           ]
         });
       });
-      paper.addView({height: 5});
+      papers.rows.push({height: 5});
+      paper.addView(papers);
     });
   }
 }
