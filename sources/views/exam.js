@@ -323,6 +323,7 @@ export default class Exam extends JetView {
                                         $$(item.id + '_judge').define('template', '<span class="fas fa-times"></span>');
                                         $$(item.id + '_judge').refresh();
                                         $$(item.id + '_judge').show();
+                                        post('/errorbook', {type: 'add-question', question_id: item.id, question_type: 0});
                                       }
                                       index++;
                                     });
@@ -339,6 +340,7 @@ export default class Exam extends JetView {
                                         $$(item.id + '_multi').define('template', '<span class="fas fa-times"></span>');
                                         $$(item.id + '_multi').refresh();
                                         $$(item.id + '_multi').show();
+                                        post('/errorbook', {type: 'add-question', question_id: item.id, question_type: 2});
                                       }
                                       index++;
                                     });
@@ -354,6 +356,7 @@ export default class Exam extends JetView {
                                         $$(item.id + '_choice').define('template', '<span class="fas fa-times"></span>');
                                         $$(item.id + '_choice').refresh();
                                         $$(item.id + '_choice').show();
+                                        post('/errorbook', {type: 'add-question', question_id: item.id, question_type: 1});
                                       }
                                       index++;
                                     });

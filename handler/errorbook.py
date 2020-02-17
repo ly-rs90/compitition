@@ -34,7 +34,7 @@ class ErrorBook(RequestHandler):
             try:
                 questions = {0: [], 1: [], 2: []}
                 error_questions = self.application.db.execute('''
-                    select question_id, question_type from error_book where user_id=? order by question_type
+                    select question_id, question_type from error_book where user_id=? limit 100
                 ''', (user_id,)).fetchall()
                 for item in error_questions:
                     questions[item[1]].append(item[0])
